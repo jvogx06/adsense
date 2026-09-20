@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { TrustLayout } from "@/components/templates/TrustLayout";
+import { siteConfig } from "@/config/site";
 import { pageMetadata } from "@/lib/seo/metadata";
 
 export const metadata: Metadata = pageMetadata("/editorial-policy");
@@ -56,9 +57,11 @@ export default function Page() {
 
       <h2 id="affiliate">Affiliate policy (reserved for the future)</h2>
       <p>
-        We currently run display advertising only. If affiliate or sponsored relationships are added
-        later, they will be clearly labelled and this policy updated — we will not present paid
-        placements as neutral recommendations.
+        {siteConfig.adsenseEnabled
+          ? "We fund the site through clearly separated display advertising."
+          : "We intend to fund the site through clearly separated display advertising."}{" "}
+        If affiliate or sponsored relationships are added later, they will be clearly labelled and
+        this policy updated — we will not present paid placements as neutral recommendations.
       </p>
     </TrustLayout>
   );

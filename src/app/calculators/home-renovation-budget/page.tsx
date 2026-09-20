@@ -33,8 +33,9 @@ export default function Page() {
       <p>
         We don&apos;t fill in market prices for you, because renovation costs depend
         heavily on scope, finishes, access and location. Use our cost guides to inform
-        your figures, then bring them here. A contingency of 10–20% is a common
-        planning buffer for unknowns.
+        your figures, then bring them here. Choose a contingency that matches your risk
+        tolerance and project uncertainty — you can model scenarios such as 10%, 15% or
+        20%. These are planning scenarios, not market-price claims.
       </p>
     </CalculatorPageLayout>
   );

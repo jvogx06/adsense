@@ -18,11 +18,12 @@ export default function Page() {
       ]}
       answer={
         <p>
-          The federal Cheaper Home Batteries Program provides{" "}
-          <strong>{batteryProgram.headlineSupport}</strong> (indicative) for eligible home
-          battery systems, with settings effective from{" "}
-          {formatDate(batteryProgram.effectiveFrom)}. The 30% figure is not a guaranteed
-          exact household discount, and support declines over time until 2030.
+          The federal Cheaper Home Batteries Program cuts the upfront cost of eligible home
+          batteries through small-scale technology certificates (STCs), with settings
+          effective from {formatDate(batteryProgram.effectiveFrom)}. The Government&apos;s
+          approximate target is around {batteryProgram.approxProgramTargetPercent}% off
+          eligible battery costs — an intent, not a guaranteed household discount — and
+          support declines over time until 2030.
         </p>
       }
       related={[
@@ -33,12 +34,13 @@ export default function Page() {
     >
       <UpdateNotice effectiveFrom={batteryProgram.effectiveFrom} />
 
-      <h2 id="eligibility">Eligibility, in brief</h2>
+      <h2 id="eligibility">Eligibility and how support is worked out</h2>
       <p>{batteryProgram.capacityEligibilityNote}</p>
       <ul>
-        <li>Nominal capacity roughly {batteryProgram.capacityEligibilityMinKWh}–{batteryProgram.capacityEligibilityMaxKWh} kWh.</li>
-        <li>STC-style rules apply to eligible usable capacity.</li>
-        <li>The support level declines over time until 2030.</li>
+        <li>Eligible installations are nominally {batteryProgram.eligibilityMinKWh}–{batteryProgram.eligibilityMaxKWh} kWh.</li>
+        <li>STC support is calculated on usable capacity up to {batteryProgram.stcSupportMaxKWh} kWh.</li>
+        <li>A capacity taper applies: 100% of the STC factor on the first 14 kWh, 60% from 14–28 kWh and 15% from 28–50 kWh.</li>
+        <li>The STC factor declines over time until 2030 (see the estimator).</li>
       </ul>
 
       <h2 id="notes">What to keep in mind</h2>

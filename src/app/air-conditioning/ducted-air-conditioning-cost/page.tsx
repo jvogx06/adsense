@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { ArticleLayout } from "@/components/templates/ArticleLayout";
 import { QuoteComparison } from "@/components/calculator/tools/QuoteComparison";
+import { CostRangeCard } from "@/components/content/CostRangeCard";
 import { Checklist } from "@/components/content/callouts";
 import { pageMetadata } from "@/lib/seo/metadata";
 
@@ -14,14 +15,13 @@ export default function Page() {
         { name: "Air Conditioning", href: "/air-conditioning" },
         { name: "Ducted Air Conditioning Cost", href: "/air-conditioning/ducted-air-conditioning-cost" },
       ]}
-      dataChecked={false}
       answer={
         <p>
-          Ducted air conditioning cost depends on your home&apos;s size, the system
-          capacity, the number of zones and how hard the installation is — so a single
-          national price is misleading. The most reliable way to understand your cost is
-          to compare itemised installer quotes and estimate running cost with your own
-          numbers.
+          A cited 2026 Australian guide has ducted air conditioning installations commonly
+          beginning around A$6,000, with a range to roughly A$12,000 depending on scope and
+          system. Your cost depends on home size, capacity, zones and installation
+          difficulty, so compare itemised installer quotes and estimate running cost with
+          your own numbers.
         </p>
       }
       related={[
@@ -31,13 +31,17 @@ export default function Page() {
         { label: "Electrician cost", href: "/trades/electrician-cost" },
       ]}
     >
+      <h2 id="sourced-range">Sourced cost range</h2>
+      <div className="my-6">
+        <CostRangeCard datumId="ducted-total" />
+      </div>
+
       <h2 id="what-drives-cost">What drives ducted cost</h2>
       <p>
         Ducted systems are priced around the total cooling/heating capacity your home
         needs, the ductwork and zoning, roof or ceiling access, and any electrical
         upgrades. Larger homes, more zones and difficult roof space all push the quote
-        up. We don&apos;t publish a fabricated national figure — the honest number is
-        the one on comparable itemised quotes for your home.
+        up, so the sourced range above is a starting point, not a quote for every house.
       </p>
 
       <h2 id="running-cost">Running cost</h2>

@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { content, indexableContent } from "@/lib/content/registry";
+import { content, indexableContent, recentlyUpdated } from "@/lib/content/registry";
 import { calculators } from "@/lib/calculators/registry";
 import { resolveToSourceIds } from "@/lib/content/source-usage";
 import { getSource } from "@/data/sources/registry";
@@ -57,6 +57,19 @@ describe("content registry", () => {
     );
     expect(stateJurisdictions.length).toBe(8);
     for (const e of stateJurisdictions) expect(e.index).toBe(false);
+  });
+
+  it("Recently Updated surfaces only editorial pages, never legal/trust/config", () => {
+    const excluded = new Set(["trust", "legal", "site", "states"]);
+    const recent = recentlyUpdated(20);
+    expect(recent.length).toBeGreaterThan(0);
+    for (const e of recent) {
+      expect(excluded.has(e.category), `${e.slug} should not appear`).toBe(false);
+    }
+    const slugs = recent.map((e) => e.slug);
+    expect(slugs).not.toContain("/privacy-policy");
+    expect(slugs).not.toContain("/about");
+    expect(slugs).not.toContain("/methodology");
   });
 
   it("every calculator route exists in the content registry", () => {

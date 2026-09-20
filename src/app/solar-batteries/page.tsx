@@ -20,7 +20,8 @@ export default function Page() {
       <section className="mb-10 rounded-[var(--radius-card)] border border-info/30 bg-info/5 p-6">
         <h2 className="text-xl font-semibold">Cheaper Home Batteries Program</h2>
         <p className="mt-2 text-muted">
-          Indicative support of {batteryProgram.headlineSupport}, effective from{" "}
+          Approximate target of around {batteryProgram.approxProgramTargetPercent}% off eligible
+          battery costs, delivered through STCs, effective from{" "}
           {formatDate(batteryProgram.effectiveFrom)}. Support declines over time until 2030.
         </p>
         <div className="mt-3 flex flex-wrap items-center gap-4">

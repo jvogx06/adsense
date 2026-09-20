@@ -18,9 +18,8 @@ export function GET() {
   } else {
     body =
       "# ads.txt\n" +
-      "# No AdSense publisher id configured yet.\n" +
-      "# After AdSense approval, set NEXT_PUBLIC_ADSENSE_CLIENT and this file will\n" +
-      "# emit the exact google.com DIRECT line for your publisher.\n";
+      "# No advertising publisher is configured yet.\n" +
+      "# Once a publisher is set up, its authorised google.com DIRECT line appears here.\n";
   }
 
   return new Response(body, {

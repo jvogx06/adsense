@@ -85,7 +85,70 @@ const records: SourceRecord[] = [
     checkedAt: CHECKED,
   },
 
+  // --- Air conditioning (hipages, 2026) ---
+  {
+    id: "hipages-split-install-2026",
+    title: "How much does it cost to install a split system air conditioner? [2026]",
+    organisation: "hipages",
+    url: "https://hipages.com.au/article/how_much_does_it_cost_to_install_a_split_system_air_conditioner",
+    sourceType: "publisher",
+    updatedAt: "2026-01-28",
+    checkedAt: CHECKED,
+    notes:
+      "Commercial marketplace guide. Distinguishes system totals (supplied and installed) by system type from installation-only labour; keep scopes separate.",
+  },
+  {
+    id: "hipages-ac-installation-2026",
+    title: "How much does air conditioning installation cost? [2026]",
+    organisation: "hipages",
+    url: "https://hipages.com.au/article/how_much_does_air_conditioning_installation_cost",
+    sourceType: "publisher",
+    publishedAt: "2026",
+    checkedAt: CHECKED,
+    notes: "Installation-only labour context; not hardware price.",
+  },
+  {
+    id: "hipages-ducted-ac-2026",
+    title: "How much does ducted air conditioning cost? [2026]",
+    organisation: "hipages",
+    url: "https://hipages.com.au/article/how_much_does_ducted_air_conditioning_cost",
+    sourceType: "publisher",
+    publishedAt: "2026",
+    checkedAt: CHECKED,
+  },
+  {
+    id: "hipages-ac-service-2026",
+    title: "How much does an air conditioning service cost? [2026]",
+    organisation: "hipages",
+    url: "https://hipages.com.au/article/how_much_does_an_air_conditioning_service_cost",
+    sourceType: "publisher",
+    publishedAt: "2026",
+    checkedAt: CHECKED,
+    notes: "Service/diagnosis context — distinct from repair or component replacement.",
+  },
+  {
+    id: "hipages-switchboard-2026",
+    title: "How much does it cost to replace a switchboard? [2026]",
+    organisation: "hipages",
+    url: "https://hipages.com.au/article/how_much_does_it_cost_to_replace_a_switchboard",
+    sourceType: "publisher",
+    updatedAt: "2026-01-23",
+    checkedAt: CHECKED,
+    notes: "Distinguishes hardware/unit context from installed replacement and rewiring scope.",
+  },
+
   // --- Solar & battery ---
+  {
+    id: "solarquotes-price-explorer",
+    title: "Solar & battery Price Explorer",
+    organisation: "SolarQuotes",
+    url: "https://www.solarquotes.com.au/price-explorer/",
+    sourceType: "publisher",
+    updatedAt: "2026",
+    checkedAt: CHECKED,
+    notes:
+      "Specialist publisher tool based on a large set of actual Australian installed-system observations, segmented by state and system size. Summarise with attribution; do not reproduce the database.",
+  },
   {
     id: "solarquotes-battery-cost-2026",
     title: "Solar battery prices and system costs",
@@ -126,6 +189,25 @@ const records: SourceRecord[] = [
     sourceType: "regulator",
     publishedAt: "2026",
     checkedAt: CHECKED,
+  },
+  {
+    id: "rec-registry-stc-calculator",
+    title: "REC Registry — Small-scale Technology Certificate calculators",
+    organisation: "Clean Energy Regulator — REC Registry",
+    url: "https://www.rec-registry.gov.au/rec-registry/app/calculators/systemcalc",
+    sourceType: "regulator",
+    checkedAt: CHECKED,
+    notes:
+      "Official STC calculator. Users should confirm their real entitlement here with an accredited installer.",
+  },
+  {
+    id: "energy-gov-au-batteries",
+    title: "energy.gov.au — Batteries and the Cheaper Home Batteries Program",
+    organisation: "Australian Government — energy.gov.au",
+    url: "https://www.energy.gov.au/households/batteries",
+    sourceType: "government",
+    checkedAt: CHECKED,
+    referenceOnly: true,
   },
 
   // --- Reference / policy (back the trust & legal pages) ---

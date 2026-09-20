@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { ArticleLayout } from "@/components/templates/ArticleLayout";
 import { CostRangeCard } from "@/components/content/CostRangeCard";
+import { RoofRestorationCalculator } from "@/components/calculator/tools/RoofRestorationCalculator";
 import { Callout } from "@/components/content/callouts";
 import { pageMetadata } from "@/lib/seo/metadata";
 
@@ -38,10 +39,14 @@ export default function Page() {
 
       <h2 id="worksheet">Estimate your area</h2>
       <p>
-        Multiply your roof area (m²) by the per-m² band that matches your roof size. For
-        example, a 150 m² medium roof at A$22–28/m² is roughly A$3,300–A$4,200. Treat this
-        as a source-based range, not a quote.
+        Enter your roof area and select the source category that matches your quote. The
+        cited source lists per-m² ranges for small, medium and larger roofs but does{" "}
+        <strong>not</strong> define the area thresholds separating them, so we never infer a
+        category from your area automatically — you choose it.
       </p>
+      <div className="my-6">
+        <RoofRestorationCalculator />
+      </div>
 
       <h2 id="factors">Factors that change the result</h2>
       <ul>

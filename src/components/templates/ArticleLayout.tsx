@@ -7,9 +7,9 @@ import { RelatedLinks, type RelatedLink } from "@/components/content/RelatedLink
 import { TableOfContents, type TocItem } from "@/components/content/TableOfContents";
 import { AdSlot } from "@/components/ads/AdSlot";
 import { articleLd, breadcrumbLd, type BreadcrumbItem } from "@/lib/seo/jsonld";
-import { siteConfig } from "@/config/site";
 import { formatDate } from "@/lib/format";
 import { getContent } from "@/lib/content/registry";
+import { getAuthor, getReviewer } from "@/config/authors";
 
 /**
  * Cost guide / article template (spec §13/§34/§49.2). Answer-first, trust row
@@ -37,16 +37,25 @@ export function ArticleLayout({
 }) {
   const entry = getContent(slug);
   const sources = sourceIds ?? entry.sourceIds;
-  const author = `${siteConfig.siteName} Editorial Team`;
+  const author = getAuthor("editorial-team");
+  const reviewer = getReviewer(null); // no fake reviewers; real ones only
 
   const article = (
     <>
       <header className="mb-6">
         <h1 className="text-3xl font-bold sm:text-4xl">{entry.title}</h1>
         <div className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-1 text-sm text-muted">
-          <span>By {author}</span>
+          <span>By {author.name}</span>
           <span aria-hidden="true">·</span>
           <span>Updated {formatDate(entry.updatedAt)}</span>
+          {reviewer && (
+            <>
+              <span aria-hidden="true">·</span>
+              <span>
+                Reviewed by {reviewer.name}, {reviewer.qualification}
+              </span>
+            </>
+          )}
           {dataChecked && sources.length > 0 && (
             <>
               <span aria-hidden="true">·</span>
@@ -105,7 +114,7 @@ export function ArticleLayout({
             slug: entry.slug,
             datePublished: entry.publishedAt,
             dateModified: entry.updatedAt,
-            authorName: author,
+            authorName: author.name,
           }),
           breadcrumbLd([{ name: "Home", href: "/" }, ...breadcrumbs]),
         ]}

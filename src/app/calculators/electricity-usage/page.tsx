@@ -22,10 +22,16 @@ export default function Page() {
       ]}
     >
       <h2 id="how-it-works">How the calculation works</h2>
+      <p>For each appliance:</p>
+      <ul>
+        <li><strong>Daily kWh = watts ÷ 1000 × quantity × hours/day</strong></li>
+        <li><strong>Weekly kWh = daily kWh × days/week</strong></li>
+        <li><strong>Annual kWh = weekly kWh × 52</strong></li>
+        <li><strong>Annual cost = annual kWh × tariff</strong> (converted from c/kWh to A$/kWh)</li>
+      </ul>
       <p>
-        For each appliance, <strong>kWh/day = watts ÷ 1000 × quantity × hours</strong>.
-        Annual energy is the daily figure multiplied by the active days you run it,
-        and cost is energy times your tariff (converted from c/kWh to A$/kWh).
+        The monthly-equivalent figure is simply the annual cost divided by 12, so it
+        averages seasonal variation across the year rather than assuming a fixed 30-day month.
       </p>
       <h2 id="tips">Finding appliance power</h2>
       <p>

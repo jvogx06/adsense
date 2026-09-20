@@ -43,7 +43,7 @@ export default function Page() {
           { material: "Slate", range: "A$200–A$500" },
         ]}
         sourceId="hipages-roof-replacement-2026"
-        footnote="Confirm whether each range is material-only or installed; do not mix with restoration or repair figures."
+        footnote="Per the source, these figures reflect replacement roofing materials and labour, and may exclude structural work and removal/disposal of the existing roof. Do not mix with restoration or repair figures."
       />
 
       <h2 id="estimator">Area estimator</h2>
@@ -55,10 +55,12 @@ export default function Page() {
         <RoofReplacementCalculator />
       </div>
 
-      <Callout tone="warning" title="Scope matters">
-        &ldquo;Material only&rdquo;, &ldquo;reroof&rdquo; and &ldquo;installed new roof&rdquo;
-        are different scopes. Each dataset record labels exactly what its range represents.
-        Removal/disposal and structural repair are usually extra unless quoted.
+      <Callout tone="warning" title="What these ranges include">
+        Per the cited source, the per-m² figures include replacement roofing materials and
+        labour. They may <strong>exclude</strong> structural work and removal/disposal of the
+        existing roof. Replacement is a different scope from restoration — we keep those
+        datasets separate. See our{" "}
+        <a href="/renovations/roof-restoration-cost">roof restoration guide</a> for that scope.
       </Callout>
     </ArticleLayout>
   );

@@ -1,6 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import "@/styles/globals.css";
-import { siteConfig } from "@/config/site";
+import { siteConfig, robotsFor } from "@/config/site";
 import { SiteHeader } from "@/components/layout/SiteHeader";
 import { SiteFooter } from "@/components/layout/SiteFooter";
 import { Analytics } from "@/components/analytics/Analytics";
@@ -28,11 +28,9 @@ export const metadata: Metadata = {
     title: siteConfig.siteName,
     description: siteConfig.description,
   },
-  robots: {
-    index: true,
-    follow: true,
-    "max-image-preview": "large",
-  },
+  robots: robotsFor(true).index
+    ? { index: true, follow: true, "max-image-preview": "large" }
+    : { index: false, follow: false },
   verification: siteConfig.googleSiteVerification
     ? { google: siteConfig.googleSiteVerification }
     : undefined,

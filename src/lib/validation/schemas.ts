@@ -111,21 +111,47 @@ export const programHistoryEntrySchema = z.object({
   change: z.string().min(1),
 });
 
+/** A dated STC multiplier period (declines over time to 2030). */
+export const stcFactorPeriodSchema = z.object({
+  label: z.string().min(1),
+  from: isoDate,
+  to: isoDate,
+  factor: z.number().positive(),
+});
+export type StcFactorPeriod = z.infer<typeof stcFactorPeriodSchema>;
+
+/** A capacity band applying a fraction of the STC factor (the taper). */
+export const capacityBandSchema = z.object({
+  fromKWh: z.number().min(0),
+  toKWh: z.number().positive(),
+  /** Fraction of the STC factor applied to capacity in this band (0–1). */
+  factorFraction: z.number().min(0).max(1),
+});
+export type CapacityBand = z.infer<typeof capacityBandSchema>;
+
 export const batteryProgramSchema = z.object({
   id: z.string().min(1),
   name: z.string().min(1),
   checkedAt: isoDate,
   effectiveFrom: isoDate,
   effectiveTo: isoDate.optional(),
-  /** Headline support described exactly as the source words it. */
-  headlineSupport: z.string().min(1),
-  /** Approximate percentage used for the *indicative* estimator, never shown as guaranteed. */
-  indicativeDiscountPercent: z.number().min(0).max(100),
-  capacityEligibilityMinKWh: z.number().min(0),
-  capacityEligibilityMaxKWh: z.number().min(0),
+  /**
+   * The Government's approximate program TARGET, e.g. "around 30%". Explanatory
+   * context only — NEVER the calculator formula.
+   */
+  approxProgramTargetPercent: z.number().min(0).max(100),
+  /** Install-eligibility window (STC support is bounded separately). */
+  eligibilityMinKWh: z.number().min(0),
+  eligibilityMaxKWh: z.number().min(0),
+  /** Capacity above this earns no additional STC support. */
+  stcSupportMaxKWh: z.number().positive(),
+  capacityTaper: z.array(capacityBandSchema).min(1),
+  stcFactorSchedule: z.array(stcFactorPeriodSchema).min(1),
   capacityEligibilityNote: z.string().min(1),
   sourceIds: z.array(z.string().min(1)).min(1),
   officialUrl: z.string().url(),
+  /** REC Registry STC calculator, for users to confirm their real entitlement. */
+  recRegistryUrl: z.string().url(),
   notes: z.array(z.string()),
   history: z.array(programHistoryEntrySchema),
 });

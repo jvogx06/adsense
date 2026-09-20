@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { siteConfig } from "@/config/site";
+import { siteConfig, robotsFor, absoluteUrl } from "@/config/site";
 import { getContent } from "@/lib/content/registry";
 
 export interface PageMetaInput {
@@ -20,19 +20,22 @@ export interface PageMetaInput {
  * validated for uniqueness by a unit test and the prelaunch check.
  */
 export function buildMetadata(input: PageMetaInput): Metadata {
-  const index = input.index ?? true;
+  const indexable = input.index ?? true;
   const canonical = input.slug === "/" ? "/" : input.slug;
+  const robots = robotsFor(indexable);
+  // Absolute, production-domain URL for Open Graph (never a staging host).
+  const ogUrl = absoluteUrl(canonical);
 
   return {
     title: input.title,
     description: input.description,
     alternates: { canonical },
-    robots: index
+    robots: robots.index
       ? { index: true, follow: true, "max-image-preview": "large" }
-      : { index: false, follow: true },
+      : { index: false, follow: robots.follow },
     openGraph: {
       type: input.ogType ?? "website",
-      url: canonical,
+      url: ogUrl,
       title: input.title,
       description: input.description,
       siteName: siteConfig.siteName,

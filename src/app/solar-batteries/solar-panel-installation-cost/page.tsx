@@ -44,10 +44,11 @@ export default function Page() {
         <li>Switchboard or metering upgrades.</li>
         <li>Small-scale certificate value at the time of install.</li>
       </ul>
-      <Callout tone="info" title="Why no per-kW price here">
-        Per-kW pricing changes with market conditions and certificate prices. We only
-        publish figures we can tie to a dated source, so here we give a framework and point
-        you to itemised quotes instead of an invented number.
+      <Callout tone="info" title="Where to find observed pricing">
+        For actual installed pricing by state and system size, the SolarQuotes Price
+        Explorer summarises a large set of real Australian installations. We link it in our
+        sources rather than reproducing its database, and we will add our own attributed
+        summary figures and methodology here before featuring this page prominently.
       </Callout>
       <h2 id="next">Next steps</h2>
       <p>

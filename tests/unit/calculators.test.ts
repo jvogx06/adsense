@@ -5,11 +5,12 @@ import { evChargingCost } from "@/lib/calculators/ev-charging";
 import { poolRunningCost } from "@/lib/calculators/pool-running";
 import { solarSystemSize } from "@/lib/calculators/solar-system-size";
 import { solarBatteryPayback } from "@/lib/calculators/solar-battery-payback";
-import { batteryDiscountEstimate } from "@/lib/calculators/battery-discount";
+import { batteryStcEstimate } from "@/lib/calculators/battery-discount";
 import { renovationBudget } from "@/lib/calculators/renovation-budget";
 import { roofReplacementRange } from "@/lib/calculators/roof-replacement";
 import { compareQuotes } from "@/lib/calculators/quote-comparison";
 import { CalculatorError, parseLooseNumber } from "@/lib/calculators/shared";
+import { acWorkedExamples, computeAcExample } from "@/lib/calculators/examples";
 import { batteryProgram } from "@/data/programs/battery-program";
 
 describe("air conditioner running cost", () => {
@@ -85,6 +86,22 @@ describe("air conditioner running cost", () => {
   });
 });
 
+describe("AC worked examples (bound to the formula so the page can't diverge)", () => {
+  it("small split system: 0.7 kW × 6 h at 30 c/kWh → 4.2 kWh/day, A$1.26/day", () => {
+    const small = acWorkedExamples.find((e) => e.label === "Small split system")!;
+    const r = computeAcExample(small);
+    expect(r.kWhPerDay).toBeCloseTo(4.2, 6);
+    expect(r.costPerDay).toBeCloseTo(1.26, 6);
+  });
+
+  it("large ducted system: 3.5 kW × 8 h at 30 c/kWh → 28 kWh/day, A$8.40/day", () => {
+    const large = acWorkedExamples.find((e) => e.label === "Large ducted system")!;
+    const r = computeAcExample(large);
+    expect(r.kWhPerDay).toBeCloseTo(28, 6);
+    expect(r.costPerDay).toBeCloseTo(8.4, 6);
+  });
+});
+
 describe("electricity usage", () => {
   it("sums multiple appliances", () => {
     const r = electricityUsage(
@@ -99,6 +116,25 @@ describe("electricity usage", () => {
     expect(r.totalKWhPerDay).toBeCloseTo(13, 6);
     expect(r.totalCostPerDay).toBeCloseTo(3.25, 6);
     expect(r.totalCostPerYear).toBeCloseTo(13 * 7 * 52 * 0.25, 4);
+  });
+
+  it("applies days/week: annual = daily × days/week × 52", () => {
+    const r = electricityUsage(
+      [{ label: "Heater", watts: 2000, quantity: 1, hoursPerDay: 4, daysPerWeek: 5 }],
+      30,
+    );
+    // 2 kW × 4 h = 8 kWh/day × 5 days × 52 weeks = 2080 kWh/yr
+    expect(r.rows[0]!.kWhPerYear).toBeCloseTo(2080, 6);
+    expect(r.totalCostPerYear).toBeCloseTo(2080 * 0.3, 4);
+  });
+
+  it("rejects zero power and non-integer quantity", () => {
+    expect(() =>
+      electricityUsage([{ label: "x", watts: 0, quantity: 1, hoursPerDay: 1 }], 30),
+    ).toThrow(CalculatorError);
+    expect(() =>
+      electricityUsage([{ label: "x", watts: 100, quantity: 1.5, hoursPerDay: 1 }], 30),
+    ).toThrow(CalculatorError);
   });
 });
 
@@ -225,35 +261,71 @@ describe("solar battery payback", () => {
   });
 });
 
-describe("federal battery discount estimator", () => {
-  it("applies the dated indicative percentage (not hard-coded)", () => {
-    const r = batteryDiscountEstimate(
-      { usableCapacityKWh: 10, eligibleInstalledQuote: 10000, mode: "indicative" },
+describe("federal battery STC estimator", () => {
+  const DATE = "2026-05-01"; // May–Dec 2026 → factor 6.8
+
+  const cases: [number, number][] = [
+    // [usable kWh, expected whole STCs] using the capacity taper × factor 6.8
+    [5, 34], //  5×1.0×6.8 = 34
+    [10, 68], // 10×1.0×6.8 = 68
+    [14, 95], // 14×1.0×6.8 = 95.2 → 95
+    [20, 119], // (14 + 6×0.6)=17.6 ×6.8 = 119.68 → 119
+    [28, 152], // (14 + 14×0.6)=22.4 ×6.8 = 152.32 → 152
+    [40, 164], // (22.4 + 12×0.15)=24.2 ×6.8 = 164.56 → 164
+    [50, 174], // (22.4 + 22×0.15)=25.7 ×6.8 = 174.76 → 174
+    [100, 174], // capacity capped at 50 kWh for STC support
+  ];
+
+  for (const [kWh, expected] of cases) {
+    it(`estimates ${expected} STCs for ${kWh} kWh at factor 6.8`, () => {
+      const r = batteryStcEstimate(
+        { usableCapacityKWh: kWh, installDateISO: DATE },
+        batteryProgram,
+      );
+      expect(r.factor).toBe(6.8);
+      expect(r.eligibleStcs).toBe(expected);
+    });
+  }
+
+  it("shows STC count only when no certificate price is supplied", () => {
+    const r = batteryStcEstimate(
+      { usableCapacityKWh: 10, installDateISO: DATE },
       batteryProgram,
     );
-    expect(r.isIndicative).toBe(true);
-    expect(r.percentApplied).toBe(batteryProgram.indicativeDiscountPercent);
-    expect(r.discountAmount).toBeCloseTo(
-      10000 * (batteryProgram.indicativeDiscountPercent / 100),
-      4,
-    );
-    expect(r.eligible).toBe(true);
+    expect(r.estimatedSupport).toBeNull();
+    expect(r.stcPriceUsed).toBeNull();
   });
 
-  it("flags ineligible capacity and supports manual mode", () => {
-    const r = batteryDiscountEstimate(
-      {
-        usableCapacityKWh: 250,
-        eligibleInstalledQuote: 10000,
-        mode: "manual",
-        manualDiscountAmount: 2500,
-      },
+  it("multiplies STCs by a supplied certificate price", () => {
+    const r = batteryStcEstimate(
+      { usableCapacityKWh: 10, installDateISO: DATE, stcPrice: 38 },
+      batteryProgram,
+    );
+    expect(r.eligibleStcs).toBe(68);
+    expect(r.estimatedSupport).toBeCloseTo(68 * 38, 6);
+  });
+
+  it("uses the correct dated factor for a later period", () => {
+    const r = batteryStcEstimate(
+      { usableCapacityKWh: 10, installDateISO: "2027-02-01" },
+      batteryProgram,
+    );
+    expect(r.factor).toBe(5.7);
+    expect(r.eligibleStcs).toBe(Math.floor(10 * 5.7));
+  });
+
+  it("flags ineligible capacity below the minimum but still estimates", () => {
+    const r = batteryStcEstimate(
+      { usableCapacityKWh: 3, installDateISO: DATE },
       batteryProgram,
     );
     expect(r.eligible).toBe(false);
-    expect(r.isIndicative).toBe(false);
-    expect(r.percentApplied).toBeCloseTo(25, 6);
-    expect(r.netCostAfterDiscount).toBeCloseTo(7500, 6);
+  });
+
+  it("throws for an install date outside the scheduled periods", () => {
+    expect(() =>
+      batteryStcEstimate({ usableCapacityKWh: 10, installDateISO: "2025-01-01" }, batteryProgram),
+    ).toThrow(CalculatorError);
   });
 });
 

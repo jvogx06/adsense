@@ -1,64 +1,68 @@
 /**
- * Prelaunch placeholder check (spec §19.3 / §61).
+ * Prelaunch / production configuration check (P0 §3 / §6).
  *
- * Warns about unfinished owner details by default. Fails the build only when the
- * owner opts in via env flags, so preview/staging is never blocked:
- *  - REQUIRE_LEGAL_COMPLETE=true  → legal owner/contact placeholders must be filled.
- *  - PRELAUNCH_STRICT=true        → example.com must be replaced with the real origin.
+ * - On a real production deployment (siteEnv === "production") the required
+ *   owner details MUST be present, or this fails — an explicit configuration
+ *   error rather than a half-configured public site.
+ * - On staging/dev it only warns, so preview builds are never blocked.
+ * - Opt-in strict flags let the owner enforce completeness earlier.
  */
 import { siteConfig } from "@/config/site";
 
 const requireLegal = process.env.REQUIRE_LEGAL_COMPLETE === "true";
 const strict = process.env.PRELAUNCH_STRICT === "true";
+// On a declared production deployment, completeness is mandatory.
+const hardMode = siteConfig.isProduction || requireLegal || strict;
 
 const warnings: string[] = [];
 const failures: string[] = [];
 
-function check(condition: boolean, message: string, hard: boolean) {
-  if (!condition) return;
-  if (hard) failures.push(message);
-  else warnings.push(message);
+function check(bad: boolean, message: string, hard: boolean) {
+  if (!bad) return;
+  (hard ? failures : warnings).push(message);
 }
 
-// Legal / owner details.
 check(
-  siteConfig.publisherLegalName.startsWith("{{"),
-  "PUBLISHER_LEGAL_NAME is not set (legal pages show a placeholder).",
-  requireLegal,
+  !siteConfig.legalNameConfigured,
+  "Legal operator name (PUBLISHER_LEGAL_NAME) is not set.",
+  hardMode,
 );
 check(
-  siteConfig.contactEmail.length === 0,
-  "NEXT_PUBLIC_CONTACT_EMAIL is not set (contact/corrections show a placeholder).",
-  requireLegal,
+  !siteConfig.contactConfigured,
+  "Public contact email (NEXT_PUBLIC_CONTACT_EMAIL) is not set.",
+  hardMode,
 );
-
-// Domain / origin.
 check(
-  siteConfig.siteUrl.includes("example.com"),
-  "NEXT_PUBLIC_SITE_URL still points at example.com.",
-  strict,
+  !siteConfig.domainConfigured,
+  "Production domain (NEXT_PUBLIC_SITE_URL) still points at example.com.",
+  hardMode,
 );
 
-// AdSense sanity: never ship a fake publisher id.
+// AdSense: never ship a fake / malformed publisher id.
 check(
-  Boolean(siteConfig.adsenseClient) && !/^ca-pub-\d{16}$/.test(siteConfig.adsenseClient ?? ""),
+  Boolean(siteConfig.adsenseClient) &&
+    !/^ca-pub-\d{16}$/.test(siteConfig.adsenseClient ?? ""),
   `NEXT_PUBLIC_ADSENSE_CLIENT "${siteConfig.adsenseClient}" is not a valid ca-pub-XXXXXXXXXXXXXXXX id.`,
   true,
 );
 
 console.log("Prelaunch check\n===============");
-console.log(`Mode: REQUIRE_LEGAL_COMPLETE=${requireLegal} PRELAUNCH_STRICT=${strict}`);
+console.log(
+  `Env: ${siteConfig.siteEnv} · production=${siteConfig.isProduction} · analytics=${siteConfig.analyticsEnabled} · adsense=${siteConfig.adsenseEnabled}`,
+);
 
 for (const w of warnings) console.log(`  [warn] ${w}`);
 for (const f of failures) console.error(`  [FAIL] ${f}`);
 
 if (failures.length > 0) {
-  console.error(`\n${failures.length} blocking issue(s). Complete these before production launch.`);
+  console.error(
+    `\n${failures.length} blocking issue(s). Complete these before production launch.`,
+  );
   process.exit(1);
 }
 console.log(
   warnings.length > 0
-    ? "\nWarnings only — safe for preview/staging. Complete before production."
+    ? "\nWarnings only — safe for preview/staging."
     : "\nAll prelaunch checks passed.",
 );
 process.exit(0);

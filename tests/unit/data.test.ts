@@ -28,8 +28,10 @@ describe("source registry", () => {
 });
 
 describe("battery program dataset", () => {
-  it("does not hard-code a permanent number and stays dated", () => {
-    expect(batteryProgram.indicativeDiscountPercent).toBeGreaterThan(0);
+  it("uses a dated STC factor schedule and capacity taper (not a hard-coded number)", () => {
+    expect(batteryProgram.stcFactorSchedule.length).toBeGreaterThan(1);
+    expect(batteryProgram.capacityTaper.length).toBe(3);
+    expect(batteryProgram.stcFactorSchedule[0]!.factor).toBe(6.8);
     expect(batteryProgram.effectiveFrom).toMatch(/^\d{4}-\d{2}-\d{2}$/);
     expect(batteryProgram.sourceIds.length).toBeGreaterThan(0);
   });

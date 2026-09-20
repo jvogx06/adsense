@@ -83,15 +83,15 @@ const entries: ContentEntry[] = [
 
   // -- Air conditioning --
   entry("/air-conditioning", "Air Conditioning Costs in Australia", "Air Conditioning Costs & Guides Australia", "Upfront, running and repair costs for ducted, split and multi-split air conditioning in Australia — with a running-cost calculator.", "air-conditioning", "informational", "air conditioning Australia costs"),
-  entry("/air-conditioning/ducted-air-conditioning-cost", "Ducted Air Conditioning Cost in Australia", "Ducted Air Conditioning Cost in Australia", "What drives ducted air conditioning cost in Australia, how running costs work, and how to compare installer quotes fairly.", "air-conditioning", "commercial-research", "ducted air conditioning cost"),
-  entry("/air-conditioning/split-system-installation-cost", "Split System Installation Cost", "Split System Air Conditioning Installation Cost", "What affects split system installation cost in Australia and how to compare quotes without a fabricated national price.", "air-conditioning", "commercial-research", "split system installation cost"),
-  entry("/air-conditioning/air-conditioning-repair-cost", "Air Conditioning Repair Cost", "Air Conditioning Repair Cost in Australia", "Cost factors, call-out fees and a repair-versus-replace decision table for air conditioning in Australia.", "air-conditioning", "commercial-research", "air conditioning repair cost", { sourceIds: ["electrician-hourly"] }),
+  entry("/air-conditioning/ducted-air-conditioning-cost", "Ducted Air Conditioning Cost in Australia", "Ducted Air Conditioning Cost in Australia", "Sourced 2026 ducted air conditioning cost ranges, what drives them, how running costs work, and how to compare installer quotes fairly.", "air-conditioning", "commercial-research", "ducted air conditioning cost", { sourceIds: ["ducted-total"] }),
+  entry("/air-conditioning/split-system-installation-cost", "Split System Installation Cost", "Split System Air Conditioning Installation Cost", "Sourced 2026 split system cost ranges by system type, the separate installation-only labour range, and how to compare quotes.", "air-conditioning", "commercial-research", "split system installation cost", { sourceIds: ["split-total-small", "split-total-two-unit", "split-total-multi", "split-install-only"] }),
+  entry("/air-conditioning/air-conditioning-repair-cost", "Air Conditioning Repair Cost", "Air Conditioning Repair & Service Cost in Australia", "Sourced 2026 air conditioning service ranges, and how service, diagnosis, repair and component replacement differ in cost.", "air-conditioning", "commercial-research", "air conditioning repair cost", { sourceIds: ["ac-service-basic", "ac-service-average", "ac-service-higher", "electrician-hourly"] }),
   entry("/air-conditioning/ducted-vs-split-system", "Ducted vs Split System: Cost Comparison", "Ducted vs Split System: Cost Comparison", "A decision guide and 10-year ownership worksheet to compare ducted and split system air conditioning by total cost.", "air-conditioning", "comparison", "ducted vs split system"),
 
   // -- Solar & batteries --
   entry("/solar-batteries", "Solar & Battery Costs in Australia", "Solar & Battery Costs in Australia", "Battery prices, payback, the federal program, sizing and installation — with calculators and dated sources.", "solar-batteries", "informational", "solar battery Australia cost", { sourceIds: ["dcceew-battery-program", "solarquotes-battery-cost-2026"] }),
   entry("/solar-batteries/solar-battery-cost", "Solar Battery Cost in Australia", "Solar Battery Cost in Australia", "Understand current battery price ranges, installation components, rebate context and the inputs that determine your real system cost.", "solar-batteries", "commercial-research", "solar battery cost Australia", { sourceIds: ["solar-battery-hardware", "dcceew-battery-program"] }),
-  entry("/solar-batteries/solar-panel-installation-cost", "Solar Panel Installation Cost", "Solar Panel Installation Cost in Australia", "A framework for solar panel installation cost by system size, using your own inputs and source-dated context only.", "solar-batteries", "commercial-research", "solar panel installation cost Australia"),
+  entry("/solar-batteries/solar-panel-installation-cost", "Solar Panel Installation Cost", "Solar Panel Installation Cost in Australia", "A framework for solar panel installation cost by system size, pointing to the SolarQuotes Price Explorer for observed Australian pricing.", "solar-batteries", "commercial-research", "solar panel installation cost Australia", { sourceIds: ["solarquotes-price-explorer"], index: false }),
   entry("/solar-batteries/federal-battery-program", "Cheaper Home Batteries Program Explained", "Cheaper Home Batteries Program Explained", "A plain-language summary of the federal Cheaper Home Batteries Program: eligibility, the indicative discount, changes and official sources.", "solar-batteries", "informational", "Cheaper Home Batteries Program", { sourceIds: ["dcceew-battery-program", "cer-q2-2026", "cer-record-growth-2026"] }),
 
   // -- Renovations --
@@ -106,7 +106,7 @@ const entries: ContentEntry[] = [
   entry("/trades", "Tradie Costs in Australia", "Tradie Costs in Australia", "How tradie pricing works — hourly rate versus call-out versus fixed quote — with sourced electrician and plumber references.", "trades", "informational", "tradie costs Australia", { sourceIds: ["plumber-hourly", "electrician-hourly"] }),
   entry("/trades/plumber-cost", "How Much Does a Plumber Cost?", "Plumber Cost in Australia: Hourly Rates & Call-Outs", "See sourced 2026 plumber rate and call-out ranges, what affects the final quote and how to compare itemised plumbing costs.", "trades", "commercial-research", "plumber cost Australia", { sourceIds: ["plumber-hourly", "plumber-callout"] }),
   entry("/trades/electrician-cost", "How Much Does an Electrician Cost?", "Electrician Cost in Australia: Rates & Service Fees", "Sourced electrician hourly rate and service-fee ranges, the factors that change a quote, and how to compare electrical work.", "trades", "commercial-research", "electrician cost Australia", { sourceIds: ["electrician-hourly", "electrician-service-fee"] }),
-  entry("/trades/switchboard-upgrade-cost", "Switchboard Upgrade Cost", "Switchboard Upgrade Cost in Australia", "The variables that drive switchboard upgrade cost, and why we do not publish a fabricated range without a dated source.", "trades", "commercial-research", "switchboard upgrade cost Australia", { sourceIds: ["electrician-hourly"] }),
+  entry("/trades/switchboard-upgrade-cost", "Switchboard Upgrade Cost", "Switchboard Upgrade Cost in Australia", "Sourced 2026 switchboard cost ranges by scope — hardware, installed replacement and rewiring — kept separate, plus the variables that move the price.", "trades", "commercial-research", "switchboard upgrade cost Australia", { sourceIds: ["switchboard-160a-hardware", "switchboard-250a-hardware", "switchboard-installed-12pole", "switchboard-rewiring-project"] }),
 
   // -- States hub (indexable) + jurisdiction pages (noindex until differentiated) --
   entry("/states", "Home Costs by State & Territory", "Home Costs by State & Territory Australia", "How home running, energy and renovation costs can differ across Australian states and territories — with links to national tools.", "states", "informational", "home costs by state Australia"),
@@ -206,9 +206,21 @@ export function indexableContent(): ContentEntry[] {
   return entries.filter((e) => e.index);
 }
 
+/** Editorial categories that may surface in "Recently updated" (P1 §15). */
+const EDITORIAL_CATEGORIES = new Set([
+  "calculators",
+  "air-conditioning",
+  "solar-batteries",
+  "renovations",
+  "trades",
+  "energy",
+  "data",
+]);
+
 export function recentlyUpdated(limit = 6): ContentEntry[] {
+  // Surface calculators and cost guides only — never legal/trust/config pages.
   return [...entries]
-    .filter((e) => e.index && e.slug !== "/")
+    .filter((e) => e.index && EDITORIAL_CATEGORIES.has(e.category))
     .sort((a, b) => (a.updatedAt < b.updatedAt ? 1 : -1))
     .slice(0, limit);
 }

@@ -18,14 +18,15 @@ interface Row {
   watts: string;
   quantity: string;
   hoursPerDay: string;
+  daysPerWeek: string;
 }
 
-const emptyRow: Row = { label: "", watts: "", quantity: "1", hoursPerDay: "1" };
+const emptyRow: Row = { label: "", watts: "", quantity: "1", hoursPerDay: "1", daysPerWeek: "7" };
 
 export function ElectricityUsageCalculator() {
   const [rows, setRows] = useState<Row[]>([
-    { label: "Fridge", watts: "150", quantity: "1", hoursPerDay: "24" },
-    { label: "Heater", watts: "2000", quantity: "1", hoursPerDay: "4" },
+    { label: "Fridge", watts: "150", quantity: "1", hoursPerDay: "24", daysPerWeek: "7" },
+    { label: "Heater", watts: "2000", quantity: "1", hoursPerDay: "4", daysPerWeek: "5" },
   ]);
   const [tariffCents, setTariffCents] = useState("30");
   const [result, setResult] = useState<ElectricityUsageResult | null>(null);
@@ -43,12 +44,17 @@ export function ElectricityUsageCalculator() {
 
   function calculate() {
     try {
+      const active = rows.filter((r) => r.watts.trim() !== "");
+      if (active.length === 0) {
+        throw new CalculatorError("Add at least one appliance with a power in watts.");
+      }
       const res = electricityUsage(
-        rows.map((r) => ({
+        active.map((r) => ({
           label: r.label,
           watts: parseLooseNumber(r.watts),
           quantity: parseLooseNumber(r.quantity),
           hoursPerDay: parseLooseNumber(r.hoursPerDay),
+          daysPerWeek: parseLooseNumber(r.daysPerWeek),
         })),
         parseLooseNumber(tariffCents),
       );
@@ -86,8 +92,9 @@ export function ElectricityUsageCalculator() {
                 />
               </label>
               <NumberField label="Power" unit="W" value={row.watts} onChange={(v) => update(i, "watts", v)} min={0} />
-              <NumberField label="Quantity" value={row.quantity} onChange={(v) => update(i, "quantity", v)} min={0} />
+              <NumberField label="Quantity" value={row.quantity} onChange={(v) => update(i, "quantity", v)} min={1} step={1} />
               <NumberField label="Hours/day" value={row.hoursPerDay} onChange={(v) => update(i, "hoursPerDay", v)} min={0} max={24} />
+              <NumberField label="Days/week" value={row.daysPerWeek} onChange={(v) => update(i, "daysPerWeek", v)} min={0} max={7} />
             </div>
             {rows.length > 1 && (
               <button

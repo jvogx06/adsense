@@ -17,10 +17,11 @@ export default function Page() {
       ]}
       answer={
         <p>
-          Air conditioning repair cost is driven by the call-out fee, diagnosis time,
-          the failed component and the labour to replace it. Small fixes are modest;
-          compressor or major board failures can approach the cost of replacement — which
-          is where a repair-versus-replace decision matters.
+          A routine air conditioning service is the most common cost: a cited 2026 guide
+          starts a basic split-system service from about A$86, with reported service costs
+          around A$121–A$221 and some jobs above A$350. Repairs are separate and depend on
+          the fault — a minor part is modest, while a compressor or major board failure can
+          approach the cost of replacement.
         </p>
       }
       related={[
@@ -29,11 +30,36 @@ export default function Page() {
         { label: "Ducted vs split comparison", href: "/air-conditioning/ducted-vs-split-system" },
       ]}
     >
-      <h2 id="cost-factors">Cost factors</h2>
+      <h2 id="service-cost">Service cost (sourced)</h2>
+      <p>These 2026 figures are for routine service and maintenance, not repairs:</p>
+      <div className="my-6 grid gap-4 sm:grid-cols-2">
+        <CostRangeCard datumId="ac-service-basic" />
+        <CostRangeCard datumId="ac-service-average" />
+        <CostRangeCard datumId="ac-service-higher" />
+      </div>
+
+      <h2 id="scope-difference">Service vs diagnosis vs repair vs replacement</h2>
+      <DataTable
+        caption="Different jobs, different costs — don't confuse a service price with a repair"
+        columns={[
+          { key: "job", header: "Job" },
+          { key: "what", header: "What it covers" },
+        ]}
+        rows={[
+          { job: "Routine service", what: "Clean, check and maintain a working unit (the sourced figures above)." },
+          { job: "Diagnosis / call-out", what: "Attend and identify a fault; may be credited toward a repair." },
+          { job: "Repair", what: "Fix the identified fault; cost depends on the part and labour." },
+          { job: "Replacement parts", what: "The price of the specific component, on top of labour." },
+          { job: "Major component repair", what: "Compressor or main board — can approach replacement cost." },
+        ]}
+        footnote="A service price is not the price of replacing a compressor. A licensed technician should diagnose the specific fault."
+      />
+
+      <h2 id="cost-factors">Repair cost factors</h2>
       <p>
-        Most repairs combine a call-out/diagnosis fee with hourly labour and parts.
-        Electrical faults may require a licensed electrician; refrigerant work requires a
-        licensed technician. As a labour reference, our electrician cost guide lists
+        Repairs combine a call-out/diagnosis fee with hourly labour and parts. Electrical
+        faults may require a licensed electrician; refrigerant work requires a licensed
+        technician. As a secondary labour reference only, our electrician cost guide lists
         sourced hourly rates:
       </p>
       <div className="my-6">

@@ -42,7 +42,13 @@ export function electricityUsage(
   const results: ApplianceResult[] = rows.map((row, i) => {
     const label = row.label?.trim() || `Appliance ${i + 1}`;
     const watts = assertNonNegative(row.watts, `${label} power (W)`);
+    if (watts <= 0) {
+      throw new CalculatorError(`${label}: enter a power greater than 0 W.`);
+    }
     const quantity = assertNonNegative(row.quantity, `${label} quantity`);
+    if (!Number.isInteger(quantity) || quantity < 1) {
+      throw new CalculatorError(`${label}: quantity must be a whole number of 1 or more.`);
+    }
     const hoursPerDay = assertNonNegative(row.hoursPerDay, `${label} hours/day`);
     if (hoursPerDay > 24) {
       throw new CalculatorError(`${label}: hours per day cannot be more than 24.`);
@@ -52,9 +58,10 @@ export function electricityUsage(
       throw new CalculatorError(`${label}: days per week cannot be more than 7.`);
     }
 
+    // daily kWh → weekly (× days/week) → annual (× 52).
     const kWhPerDay = (watts / 1000) * quantity * hoursPerDay;
-    const activeDaysPerYear = daysPerWeek * 52;
-    const kWhPerYear = kWhPerDay * activeDaysPerYear;
+    const kWhPerWeek = kWhPerDay * daysPerWeek;
+    const kWhPerYear = kWhPerWeek * 52;
 
     return {
       label,

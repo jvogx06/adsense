@@ -119,8 +119,9 @@ export default function HomePage() {
           <Eyebrow>Current Australian data</Eyebrow>
           <h2 className="mt-1 text-xl font-semibold">Federal Cheaper Home Batteries Program</h2>
           <p className="mt-2 max-w-2xl text-muted">
-            The program provides {batteryProgram.headlineSupport} (indicative), with settings
-            effective from {formatDate(batteryProgram.effectiveFrom)}. Support declines over time.
+            The program targets around {batteryProgram.approxProgramTargetPercent}% off eligible
+            battery costs (approximate), delivered through STCs, with settings effective from{" "}
+            {formatDate(batteryProgram.effectiveFrom)}. Support declines over time.
             This is not a breaking-news feed — we re-check the official source on a schedule.
           </p>
           <div className="mt-3 flex flex-wrap items-center gap-4">

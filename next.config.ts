@@ -27,6 +27,16 @@ const csp = [
   .join("; ")
   .concat(";");
 
+// Environment detection mirrors src/config/site.ts (kept inline so next.config
+// needs no alias resolution). Any non-production deployment is noindex site-wide.
+const productionUrl = (process.env.NEXT_PUBLIC_SITE_URL ?? "").replace(/\/+$/, "");
+const domainConfigured = productionUrl.length > 0 && !productionUrl.includes("example.com");
+const explicitEnv = process.env.NEXT_PUBLIC_SITE_ENV;
+const isProduction =
+  domainConfigured &&
+  (explicitEnv === "production" ||
+    (explicitEnv === undefined && process.env.VERCEL_ENV === "production"));
+
 const securityHeaders = [
   { key: "Content-Security-Policy", value: csp },
   { key: "X-Content-Type-Options", value: "nosniff" },
@@ -36,6 +46,11 @@ const securityHeaders = [
     key: "Permissions-Policy",
     value: "camera=(), microphone=(), geolocation=(), browsing-topics=()",
   },
+  // Belt-and-braces: on staging/preview, block indexing at the header level too
+  // (in addition to per-page noindex metadata).
+  ...(isProduction
+    ? []
+    : [{ key: "X-Robots-Tag", value: "noindex, nofollow" }]),
 ];
 
 const nextConfig: NextConfig = {

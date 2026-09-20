@@ -71,6 +71,30 @@ test.describe("technical routes", () => {
     expect(res.headers()["content-type"]).toContain("text/plain");
   });
 
+  test("state pages are noindex and not in the sitemap", async ({ page, request }) => {
+    await page.goto("/states/nsw");
+    const robots = await page.locator('meta[name="robots"]').getAttribute("content");
+    expect(robots).toContain("noindex");
+    const sm = await (await request.get("/sitemap.xml")).text();
+    expect(sm).not.toContain("/states/nsw");
+  });
+
+  test("an indexable calculator has a self-referencing canonical and is indexable", async ({ page }) => {
+    await page.goto("/calculators/solar-battery-payback");
+    const canonical = await page.locator('link[rel="canonical"]').getAttribute("href");
+    expect(canonical).toContain("/calculators/solar-battery-payback");
+    const robots = await page.locator('meta[name="robots"]').getAttribute("content");
+    expect(robots).toContain("index");
+    expect(robots).not.toContain("noindex");
+  });
+
+  test("battery estimator uses the STC model, not a flat 30% of a quote", async ({ page }) => {
+    await page.goto("/calculators/battery-discount-estimator");
+    await expect(page.getByText(/Unofficial estimate/i).first()).toBeVisible();
+    await page.getByRole("button", { name: "Calculate" }).click();
+    await expect(page.getByText(/STCs/).first()).toBeVisible();
+  });
+
   test("404 page is useful and ad-free", async ({ page }) => {
     const res = await page.goto("/this-route-does-not-exist");
     expect(res?.status()).toBe(404);

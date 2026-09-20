@@ -53,7 +53,7 @@ export default function Page() {
         title="Before you commit"
         items={[
           "Lock the scope and get like-for-like quotes.",
-          "Budget a contingency of 10–20% for unknowns.",
+          "Model a contingency scenario (e.g. 10%, 15% or 20%) for unknowns.",
           "Confirm who manages approvals and engineering.",
           "Agree how variations are priced in writing.",
         ]}

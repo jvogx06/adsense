@@ -10,7 +10,7 @@ export default function Page() {
     <TrustLayout
       slug="/about"
       breadcrumbs={[{ name: "About", href: "/about" }]}
-      lead={`${siteConfig.siteName} is an independent Australian information site about what homes cost to run, repair and improve.`}
+      lead={`${siteConfig.siteName} is an independent information site focused on Australian home costs — what homes cost to run, repair and improve.`}
     >
       <h2 id="mission">Our mission</h2>
       <p>
@@ -36,8 +36,10 @@ export default function Page() {
 
       <h2 id="funding">How the site is funded</h2>
       <p>
-        The site is supported by display advertising, kept clearly separate from our editorial
-        conclusions. See our <a href="/advertising-disclosure">advertising disclosure</a> and{" "}
+        {siteConfig.adsenseEnabled
+          ? "The site is supported by display advertising, kept clearly separate from our editorial conclusions."
+          : "This site may be supported by clearly separated display advertising in future; advertising never influences our editorial conclusions."}{" "}
+        See our <a href="/advertising-disclosure">advertising disclosure</a> and{" "}
         <a href="/editorial-policy">editorial policy</a>.
       </p>
 

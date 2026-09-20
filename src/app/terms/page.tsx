@@ -11,13 +11,12 @@ export default function Page() {
     <TrustLayout
       slug="/terms"
       breadcrumbs={[{ name: "Terms of Use", href: "/terms" }]}
-      lead="Informational-only terms for using this site. Legal review is recommended before production."
+      lead="Informational-only terms for using this site."
     >
-      <Callout tone="warning" title="Template — legal review recommended">
+      <Callout tone="neutral" title="Please note">
         <p>
-          These terms are a starting template referencing{" "}
-          <code>{siteConfig.publisherLegalName}</code>. Have them reviewed by a qualified adviser
-          and completed with real details before launch.
+          These terms provide general information about using this site and should be reviewed by
+          a qualified legal professional before commercial launch. They are not legal advice.
         </p>
       </Callout>
 
@@ -44,8 +43,8 @@ export default function Page() {
       <h2 id="liability">Limitation of liability</h2>
       <p>
         To the extent permitted by law, we are not liable for decisions made in reliance on estimates
-        or information on this site. This section must be reviewed by a qualified adviser before
-        production.
+        or information on this site. Always confirm figures with a licensed professional and official
+        sources before acting.
       </p>
 
       <h2 id="changes">Changes</h2>

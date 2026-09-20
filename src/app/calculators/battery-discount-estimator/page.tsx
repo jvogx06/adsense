@@ -15,7 +15,7 @@ export default function Page() {
         { name: "Calculators", href: "/calculators" },
         { name: "Federal Battery Discount Estimator", href: "/calculators/battery-discount-estimator" },
       ]}
-      intro="A rough, dated indicative estimate of the federal battery discount on an eligible quote. This is not an official government calculator."
+      intro="A dated, STC-based estimate of federal battery support from your usable capacity and installation date. This is an unofficial estimate, not an official government calculator."
       tool={<BatteryDiscountCalculator />}
       related={[
         { label: "Cheaper Home Batteries Program explained", href: "/solar-batteries/federal-battery-program" },
@@ -25,26 +25,52 @@ export default function Page() {
     >
       <UpdateNotice effectiveFrom={batteryProgram.effectiveFrom}>
         <p>
-          This estimator reads a dated program dataset — it never hard-codes a
-          permanent percentage. The current indicative figure is{" "}
-          <strong>{batteryProgram.headlineSupport}</strong>, and support declines over
-          time until 2030. Always confirm your exact entitlement with DCCEEW and your
-          installer.
+          Support under the Cheaper Home Batteries Program is delivered through
+          small-scale technology certificates (STCs), not a flat percentage off your
+          quote. This estimator reads a dated program dataset — the STC factor and the
+          capacity taper — and never hard-codes a permanent number.
         </p>
       </UpdateNotice>
 
       <h2 id="how-it-works">How the estimate works</h2>
+      <p>The estimate follows the program&apos;s STC design:</p>
+      <ol>
+        <li>You enter your <strong>usable battery capacity</strong>.</li>
+        <li>
+          We apply the <strong>capacity taper</strong> — 100% of the STC factor on the
+          first 14 kWh, 60% from 14–28 kWh and 15% from 28–50 kWh — and multiply by the
+          <strong> STC factor</strong> for your installation date to estimate your STCs.
+        </li>
+        <li>
+          You may optionally enter a <strong>certificate price (A$/STC)</strong>. If you
+          do, estimated support = eligible STCs × your price. If not, we show the STC
+          count only, because the dollar value depends on the certificate market.
+        </li>
+      </ol>
+
+      <h2 id="factor">The STC factor declines over time</h2>
       <p>
-        In indicative mode we apply the program&apos;s dated headline percentage to
-        your eligible installed quote to give a rough discount and net cost. In manual
-        mode you enter the discount you were actually quoted and we simply show the net.
-        Eligibility is checked against the dataset&apos;s capacity band.
+        The factor steps down through 2030 (6.8 for May–Dec 2026, then 5.7, 5.2, 4.6 and
+        so on). Select your installation period in the tool to use the right factor.
       </p>
+
+      <h2 id="target">About the &ldquo;around 30%&rdquo; figure</h2>
+      <p>
+        The Government describes the program&apos;s approximate target as roughly{" "}
+        {batteryProgram.approxProgramTargetPercent}% off eligible battery costs. That is
+        explanatory context for the program&apos;s intent — it is <em>not</em> the
+        calculator&apos;s formula. Your real result depends on the STC factor, the
+        capacity taper and the certificate market.
+      </p>
+
       <h2 id="limits">Important limits</h2>
       <p>
-        The real discount depends on the current STC-style formula, certificate prices
-        and your installer&apos;s pricing, so treat this as a ballpark only. The
-        program&apos;s effective date and official source appear next to your result.
+        This is an unofficial estimate. Certificate prices vary and eligibility rules
+        can change. Confirm your actual entitlement with the{" "}
+        <a href={batteryProgram.recRegistryUrl} target="_blank" rel="noopener noreferrer">
+          REC Registry calculator
+        </a>{" "}
+        and your accredited installer before relying on any figure.
       </p>
     </CalculatorPageLayout>
   );

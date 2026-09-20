@@ -13,7 +13,7 @@ export default function Page() {
       breadcrumbs={[{ name: "Contact", href: "/contact" }]}
       lead="Get in touch about a correction, a data source or a general question."
     >
-      {siteConfig.contactEmail ? (
+      {siteConfig.contactConfigured ? (
         <>
           <h2 id="email">Email us</h2>
           <p>
@@ -23,11 +23,11 @@ export default function Page() {
           </p>
         </>
       ) : (
-        <Callout tone="warning" title="Contact method not yet configured">
+        <Callout tone="neutral" title="Get in touch">
           <p>
-            The site owner needs to set a real contact email (the{" "}
-            <code>NEXT_PUBLIC_CONTACT_EMAIL</code> environment variable) before launch. We
-            deliberately do not publish a fake address or a form that submits nowhere.
+            We&apos;re finalising our public contact channel — please check back soon. In the
+            meantime, our <a href="/corrections">corrections policy</a> explains how error
+            reports are handled.
           </p>
         </Callout>
       )}

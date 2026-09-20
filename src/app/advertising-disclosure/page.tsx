@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { TrustLayout } from "@/components/templates/TrustLayout";
+import { siteConfig } from "@/config/site";
 import { pageMetadata } from "@/lib/seo/metadata";
 
 export const metadata: Metadata = pageMetadata("/advertising-disclosure");
@@ -13,10 +14,12 @@ export default function Page() {
     >
       <h2 id="display">Display advertising</h2>
       <p>
-        This site may display third-party advertising, initially through Google AdSense.
-        Advertising helps fund the free calculators and cost guides we publish. Ads are clearly
-        distinct from our content and are never disguised as navigation, recommendations,
-        calculator results or source links.
+        {siteConfig.adsenseEnabled
+          ? "This site displays third-party advertising, initially through Google AdSense."
+          : "This site may be supported by third-party advertising in future, initially through Google AdSense. It is not currently running."}{" "}
+        Advertising helps fund the free calculators and cost guides we publish. When shown, ads
+        are clearly distinct from our content and are never disguised as navigation,
+        recommendations, calculator results or source links.
       </p>
 
       <h2 id="independence">Advertisers don&apos;t write our guides</h2>
@@ -28,10 +31,13 @@ export default function Page() {
 
       <h2 id="future">Affiliate and sponsored relationships (future)</h2>
       <p>
-        We currently run display advertising only. If we add affiliate links, lead referrals or
-        sponsored content in future, we will label those relationships clearly and update this
-        page. We will not quietly turn the site into a paid ranking, and we will not claim
-        absolute independence if we later earn from referrals without disclosing it.
+        {siteConfig.adsenseEnabled
+          ? "We currently run display advertising only."
+          : "We do not currently run any advertising or affiliate relationships."}{" "}
+        If we add affiliate links, lead referrals or sponsored content in future, we will label
+        those relationships clearly and update this page. We will not quietly turn the site into
+        a paid ranking, and we will not claim absolute independence if we later earn from
+        referrals without disclosing it.
       </p>
 
       <h2 id="privacy">Advertising and your data</h2>

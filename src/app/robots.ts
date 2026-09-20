@@ -1,12 +1,18 @@
 import type { MetadataRoute } from "next";
-import { absoluteUrl, siteConfig } from "@/config/site";
+import { siteConfig } from "@/config/site";
 
 /**
- * robots.txt (spec §16). Allows crawling of the public site and critical assets,
- * disallows internal search, and links the sitemap. robots.txt is not a noindex
- * mechanism — noindex is handled per-page via metadata.
+ * robots.txt (spec §16, P0 §6/§18).
+ *
+ * Production: allow crawling of the public site, disallow internal search, link
+ * the sitemap. Staging/preview: disallow everything (belt-and-braces; the real
+ * noindex signals are the per-page metadata and the X-Robots-Tag header).
+ * robots.txt is never the sole noindex mechanism.
  */
 export default function robots(): MetadataRoute.Robots {
+  if (!siteConfig.isProduction) {
+    return { rules: [{ userAgent: "*", disallow: "/" }] };
+  }
   return {
     rules: [
       {
@@ -16,6 +22,6 @@ export default function robots(): MetadataRoute.Robots {
       },
     ],
     sitemap: `${siteConfig.siteUrl}/sitemap.xml`,
-    host: absoluteUrl("/"),
+    host: siteConfig.siteUrl,
   };
 }

@@ -56,7 +56,8 @@ export function Analytics() {
 
   const choose = useCallback((value: Consent) => writeConsent(value), []);
 
-  if (!gaId) return null;
+  // Nothing loads unless analytics is actually enabled (real id + production).
+  if (!siteConfig.analyticsEnabled || !gaId) return null;
 
   return (
     <>

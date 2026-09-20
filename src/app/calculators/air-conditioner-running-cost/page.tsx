@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import { CalculatorPageLayout } from "@/components/templates/CalculatorPageLayout";
 import { AirConditionerCalculator } from "@/components/calculator/tools/AirConditionerCalculator";
 import { Callout, Definition } from "@/components/content/callouts";
+import { acWorkedExamples, computeAcExample } from "@/lib/calculators/examples";
+import { formatAUD, formatKWh } from "@/lib/format";
 import { pageMetadata } from "@/lib/seo/metadata";
 
 export const metadata: Metadata = pageMetadata("/calculators/air-conditioner-running-cost");
@@ -63,16 +65,22 @@ export default function Page() {
       </p>
 
       <h2 id="examples">Worked examples</h2>
-      <p>These are illustrative examples using labelled assumptions, not market claims:</p>
+      <p>
+        These are illustrative examples using labelled assumptions, not market claims.
+        They are computed with the same formula as the calculator above:
+      </p>
       <ul>
-        <li>
-          <strong>Small split system:</strong> 0.7 kW input, 6 hours/day, 30 c/kWh →
-          about 1.3 kWh/day and roughly A$0.38/day when running.
-        </li>
-        <li>
-          <strong>Large ducted system:</strong> 3.5 kW input, 8 hours/day, 30 c/kWh →
-          about 28 kWh/day and roughly A$8.40/day when running.
-        </li>
+        {acWorkedExamples.map((ex) => {
+          const r = computeAcExample(ex);
+          return (
+            <li key={ex.label}>
+              <strong>{ex.label}:</strong> {ex.input.ratedInputKW} kW input,{" "}
+              {ex.input.hoursPerDay} hours/day, {ex.input.tariffCents} c/kWh → about{" "}
+              {formatKWh(r.kWhPerDay)}/day and approximately{" "}
+              {formatAUD(r.costPerDay, { forceDecimals: true })}/day while operating.
+            </li>
+          );
+        })}
       </ul>
 
       <h2 id="improve">How to improve the estimate</h2>

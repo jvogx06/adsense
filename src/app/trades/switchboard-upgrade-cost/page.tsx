@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { ArticleLayout } from "@/components/templates/ArticleLayout";
 import { CostRangeCard } from "@/components/content/CostRangeCard";
+import { DataTable } from "@/components/content/DataTable";
 import { Callout } from "@/components/content/callouts";
 import { pageMetadata } from "@/lib/seo/metadata";
 
@@ -16,11 +17,10 @@ export default function Page() {
       ]}
       answer={
         <p>
-          Switchboard upgrade cost depends on the work involved — replacing an old board,
-          adding safety switches, rewiring circuits or increasing capacity — so it&apos;s
-          quoted per job. We don&apos;t publish a fabricated range here because we don&apos;t
-          yet hold a dated source for one; instead, we explain the variables and give a labour
-          reference.
+          A cited 2026 guide puts a typical installed 12-pole switchboard replacement around
+          A$900–A$1,200. Hardware alone is less (a 160A board around A$300–A$600), while
+          higher-capacity units and jobs needing extra cabling or rewiring can move the
+          project toward A$2,000–A$2,500. These are different scopes, kept separate below.
         </p>
       }
       related={[
@@ -29,6 +29,33 @@ export default function Page() {
         { label: "Tradie costs hub", href: "/trades" },
       ]}
     >
+      <h2 id="scopes">Cost by scope (sourced)</h2>
+      <p>
+        Switchboard figures mean very different things depending on scope. We keep them
+        separate rather than blending them into one number:
+      </p>
+      <DataTable
+        caption="Switchboard cost by scope (2026 national guide)"
+        columns={[
+          { key: "scope", header: "Scope" },
+          { key: "range", header: "Cited figure", numeric: true },
+          { key: "note", header: "What it means" },
+        ]}
+        rows={[
+          { scope: "160A board — hardware", range: "A$300–A$600", note: "Unit only, excludes installation" },
+          { scope: "250A unit — hardware", range: "up to A$2,000", note: "Higher-capacity unit, excludes installation" },
+          { scope: "Installed 12-pole replacement", range: "A$900–A$1,200", note: "Board plus typical installation" },
+          { scope: "With extra cabling/rewiring", range: "A$2,000–A$2,500", note: "Larger project scope" },
+        ]}
+        sourceId="hipages-switchboard-2026"
+        footnote="Hardware, installed replacement and rewiring are different scopes — do not add them together or average them."
+      />
+
+      <div className="my-6 grid gap-4 sm:grid-cols-2">
+        <CostRangeCard datumId="switchboard-installed-12pole" />
+        <CostRangeCard datumId="switchboard-rewiring-project" />
+      </div>
+
       <h2 id="variables">What drives the cost</h2>
       <ul>
         <li>Whether the board is replaced or just modified.</li>
@@ -39,16 +66,10 @@ export default function Page() {
       </ul>
 
       <h2 id="labour">Labour reference</h2>
-      <p>As a starting point for labour, our electrician cost guide lists sourced rates:</p>
+      <p>For hourly labour context, our electrician cost guide lists sourced rates:</p>
       <div className="my-6">
         <CostRangeCard datumId="electrician-hourly" />
       </div>
-
-      <Callout tone="info" title="Why no headline range yet">
-        Consistent with our data policy, we won&apos;t invent a switchboard price range to fill
-        the page. When we add a dated source for switchboard upgrades, a source-backed range
-        will appear here.
-      </Callout>
 
       <Callout tone="warning" title="Licensed work only">
         Switchboard work is licensed electrical work. Always use a licensed electrician and

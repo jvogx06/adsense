@@ -36,6 +36,9 @@ export default defineConfig({
     reuseExistingServer: !process.env.CI,
     env: {
       NEXT_PUBLIC_SITE_URL: baseURL,
+      // Run the server as if it were the production deployment so we can test
+      // indexable output, canonicals and the sitemap.
+      NEXT_PUBLIC_SITE_ENV: "production",
     },
   },
 });

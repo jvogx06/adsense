@@ -1,0 +1,171 @@
+@import "tailwindcss";
+
+/*
+ * Design tokens (spec §10.2). Defined once here and consumed as Tailwind
+ * utilities (bg-surface, text-muted, border-border, text-primary, ...).
+ * All colour pairings meet WCAG 2.2 AA on their intended backgrounds and
+ * state is never communicated by colour alone.
+ */
+@theme {
+  --color-background: #f7f8f5;
+  --color-surface: #ffffff;
+  --color-text: #17211d;
+  --color-muted: #5f6e68;
+  --color-primary: #0f6b5b;
+  --color-primary-dark: #0a4d42;
+  --color-energy: #e6a624;
+  --color-info: #2e5eaa;
+  --color-border: #dde4df;
+  --color-danger: #b42318;
+
+  --radius-card: 14px;
+
+  --font-sans: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont,
+    "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --font-mono: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+
+  --shadow-card: 0 1px 2px rgba(23, 33, 29, 0.04), 0 2px 8px rgba(23, 33, 29, 0.05);
+}
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+    -webkit-text-size-adjust: 100%;
+  }
+
+  body {
+    background-color: var(--color-background);
+    color: var(--color-text);
+    font-family: var(--font-sans);
+    font-size: 1.0625rem; /* 17px */
+    line-height: 1.65;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4 {
+    color: var(--color-text);
+    font-weight: 700;
+    line-height: 1.2;
+    text-wrap: balance;
+  }
+
+  a {
+    color: var(--color-primary-dark);
+  }
+
+  a:hover {
+    color: var(--color-primary);
+  }
+
+  /* Visible focus for keyboard users (spec §26). */
+  :focus-visible {
+    outline: 3px solid var(--color-info);
+    outline-offset: 2px;
+    border-radius: 4px;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    html {
+      scroll-behavior: auto;
+    }
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.001ms !important;
+      transition-duration: 0.001ms !important;
+    }
+  }
+}
+
+@layer components {
+  /* Article/content typography column (spec §10.4). */
+  .content-prose {
+    max-width: 46rem; /* ~72–78 chars */
+    font-size: 1.0625rem;
+    line-height: 1.7;
+  }
+  .content-prose h2 {
+    font-size: 1.5rem;
+    margin-top: 2.25rem;
+    margin-bottom: 0.75rem;
+  }
+  .content-prose h3 {
+    font-size: 1.2rem;
+    margin-top: 1.75rem;
+    margin-bottom: 0.5rem;
+  }
+  .content-prose p,
+  .content-prose ul,
+  .content-prose ol {
+    margin-bottom: 1rem;
+  }
+  .content-prose ul,
+  .content-prose ol {
+    padding-left: 1.35rem;
+  }
+  .content-prose ul {
+    list-style: disc;
+  }
+  .content-prose ol {
+    list-style: decimal;
+  }
+  .content-prose li {
+    margin-bottom: 0.35rem;
+  }
+  .content-prose a {
+    text-decoration: underline;
+    text-underline-offset: 2px;
+  }
+
+  /* Responsive table wrapper with a visible scroll hint (spec §10.4). */
+  .table-scroll {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  /* Skip link, visually hidden until focused (spec §26). */
+  .skip-link {
+    position: absolute;
+    left: 0.5rem;
+    top: -3rem;
+    z-index: 100;
+    background: var(--color-surface);
+    color: var(--color-primary-dark);
+    padding: 0.5rem 0.9rem;
+    border: 2px solid var(--color-primary);
+    border-radius: 8px;
+    transition: top 0.15s ease-in-out;
+  }
+  .skip-link:focus {
+    top: 0.5rem;
+  }
+}
+
+/* Print: calculator results and sources print cleanly, without ads or nav
+ * (spec §11 PrintView / §37). */
+@media print {
+  header,
+  footer,
+  .skip-link,
+  [data-ad-placement],
+  [role="dialog"] {
+    display: none !important;
+  }
+  body {
+    background: #fff;
+    color: #000;
+    font-size: 12pt;
+  }
+  a[href]::after {
+    content: " (" attr(href) ")";
+    font-size: 9pt;
+    color: #444;
+  }
+  main {
+    max-width: 100%;
+  }
+}

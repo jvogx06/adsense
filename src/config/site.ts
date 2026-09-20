@@ -54,8 +54,12 @@ const publisherLegalName = env("PUBLISHER_LEGAL_NAME") ?? siteName;
 const contactEmail = env("NEXT_PUBLIC_CONTACT_EMAIL") ?? "";
 const contactConfigured = contactEmail.length > 0;
 
-const adsenseClient = env("NEXT_PUBLIC_ADSENSE_CLIENT");
-const adsenseClientValid = adsenseClient ? /^ca-pub-\d{16}$/.test(adsenseClient) : false;
+// The site's real AdSense publisher id (public, not a secret — it appears in
+// the page source of every AdSense site). Env-overridable so it can change
+// without a code edit.
+const DEFAULT_ADSENSE_CLIENT = "ca-pub-4215967644827651";
+const adsenseClient = env("NEXT_PUBLIC_ADSENSE_CLIENT") ?? DEFAULT_ADSENSE_CLIENT;
+const adsenseClientValid = /^ca-pub-\d{16}$/.test(adsenseClient);
 const gaMeasurementId = env("NEXT_PUBLIC_GA_MEASUREMENT_ID");
 
 export const siteConfig = {
@@ -97,7 +101,17 @@ export const siteConfig = {
   // --- Feature flags (P0 §24). Each requires production + a real id. ---
   /** GA4 available (still consent-gated at runtime). */
   analyticsEnabled: Boolean(gaMeasurementId) && isProduction,
-  /** AdSense available: valid ca-pub id, explicit enable, and production. */
+  /**
+   * Load the AdSense account/verification loader script (adsbygoogle.js).
+   * This is what Google fetches to verify site ownership and review the site,
+   * so it loads whenever a valid publisher id is present and we are NOT in local
+   * development — independent of whether ad UNITS are enabled. It renders no ads
+   * and no Auto Ads by itself.
+   */
+  adsenseScriptEnabled: adsenseClientValid && siteEnv !== "development",
+  /** True when a valid publisher id is configured. */
+  adsenseAccountConnected: adsenseClientValid,
+  /** Ad UNITS available: valid id, explicit enable, and production. */
   adsenseEnabled:
     adsenseClientValid && env("NEXT_PUBLIC_ADSENSE_ENABLED") === "true" && isProduction,
   /** A certified CMP is connected (never a self-built banner claiming certification). */

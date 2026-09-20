@@ -95,6 +95,16 @@ test.describe("technical routes", () => {
     await expect(page.getByText(/STCs/).first()).toBeVisible();
   });
 
+  test("AdSense verification loader is present once in <head>, with no ad units", async ({ page }) => {
+    await page.goto("/");
+    const loaders = page.locator('head script[src*="adsbygoogle.js"]');
+    await expect(loaders).toHaveCount(1);
+    const src = await loaders.first().getAttribute("src");
+    expect(src).toContain("client=ca-pub-4215967644827651");
+    // Verification only — no ad units rendered.
+    await expect(page.locator("ins.adsbygoogle")).toHaveCount(0);
+  });
+
   test("404 page is useful and ad-free", async ({ page }) => {
     const res = await page.goto("/this-route-does-not-exist");
     expect(res?.status()).toBe(404);

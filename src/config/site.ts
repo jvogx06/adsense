@@ -26,7 +26,11 @@ function env(key: string): string | undefined {
 
 const PLACEHOLDER_HOST = "example.com";
 
-const productionUrlRaw = env("NEXT_PUBLIC_SITE_URL") ?? `https://${PLACEHOLDER_HOST}`;
+// The canonical production origin. Baked in (§3) so canonicals/sitemap/OG never
+// depend on an arbitrary preview hostname; env-overridable for other deployments.
+const DEFAULT_PRODUCTION_URL = "https://www.homecostaustralia.com";
+
+const productionUrlRaw = env("NEXT_PUBLIC_SITE_URL") ?? DEFAULT_PRODUCTION_URL;
 const productionUrl = productionUrlRaw.replace(/\/+$/, "");
 const domainConfigured = !productionUrl.includes(PLACEHOLDER_HOST);
 

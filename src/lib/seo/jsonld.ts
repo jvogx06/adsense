@@ -72,7 +72,11 @@ export function articleLd(input: ArticleLdInput) {
       "@type": "Organization",
       name: siteConfig.siteName,
     },
-    image: absoluteUrl(input.image ?? siteConfig.defaultOgImage),
+    image: input.image
+      ? input.image.startsWith("http")
+        ? input.image
+        : absoluteUrl(input.image)
+      : absoluteUrl(siteConfig.defaultOgImage),
     mainEntityOfPage: {
       "@type": "WebPage",
       "@id": absoluteUrl(input.slug),

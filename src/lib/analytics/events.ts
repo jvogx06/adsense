@@ -38,6 +38,12 @@ export const analytics = {
   relatedContentClicked(fromSlug: string, toSlug: string) {
     track("related_content_clicked", { from_slug: fromSlug, to_slug: toSlug });
   },
+  relatedGuideClicked(fromSlug: string, toSlug: string) {
+    track("related_guide_click", { from_slug: fromSlug, to_slug: toSlug });
+  },
+  copyResult(pageSlug: string) {
+    track("copy_result", { page_slug: pageSlug });
+  },
   internalSearch(queryLength: number, resultCount: number) {
     track("internal_search", {
       query_length: queryLength,

@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { analytics } from "@/lib/analytics/events";
 
 /**
  * Copy-link + print controls (spec §11/§56). Deliberately plain and never
@@ -14,6 +15,7 @@ export function ShareTools() {
     try {
       await navigator.clipboard.writeText(window.location.href);
       setCopied(true);
+      analytics.copyResult(window.location.pathname);
       window.setTimeout(() => setCopied(false), 2000);
     } catch {
       /* clipboard unavailable */

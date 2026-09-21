@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { siteConfig, robotsFor, absoluteUrl } from "@/config/site";
 import { getContent } from "@/lib/content/registry";
+import { ogImageForEntry } from "@/lib/seo/og";
 
 export interface PageMetaInput {
   title: string;
@@ -12,6 +13,9 @@ export interface PageMetaInput {
   ogType?: "website" | "article";
   publishedTime?: string;
   modifiedTime?: string;
+  /** Absolute or root-relative OG/Twitter image URL. */
+  image?: string;
+  imageAlt?: string;
 }
 
 /**
@@ -25,6 +29,14 @@ export function buildMetadata(input: PageMetaInput): Metadata {
   const robots = robotsFor(indexable);
   // Absolute, production-domain URL for Open Graph (never a staging host).
   const ogUrl = absoluteUrl(canonical);
+  const image = input.image
+    ? input.image.startsWith("http")
+      ? input.image
+      : absoluteUrl(input.image)
+    : undefined;
+  const imageBlock = image
+    ? [{ url: image, width: 1200, height: 630, alt: input.imageAlt ?? input.title }]
+    : undefined;
 
   return {
     title: input.title,
@@ -40,6 +52,7 @@ export function buildMetadata(input: PageMetaInput): Metadata {
       description: input.description,
       siteName: siteConfig.siteName,
       locale: "en_AU",
+      ...(imageBlock ? { images: imageBlock } : {}),
       ...(input.publishedTime ? { publishedTime: input.publishedTime } : {}),
       ...(input.modifiedTime ? { modifiedTime: input.modifiedTime } : {}),
     },
@@ -47,6 +60,7 @@ export function buildMetadata(input: PageMetaInput): Metadata {
       card: "summary_large_image",
       title: input.title,
       description: input.description,
+      ...(image ? { images: [image] } : {}),
     },
   };
 }
@@ -59,6 +73,7 @@ export function pageMetadata(slug: string): Metadata {
   const entry = getContent(slug);
   const isArticle =
     entry.intent === "commercial-research" || entry.intent === "comparison";
+  const og = ogImageForEntry(entry);
   return buildMetadata({
     title: entry.metaTitle,
     description: entry.description,
@@ -67,5 +82,7 @@ export function pageMetadata(slug: string): Metadata {
     ogType: isArticle ? "article" : "website",
     publishedTime: entry.publishedAt,
     modifiedTime: entry.updatedAt,
+    image: og.url,
+    imageAlt: og.alt,
   });
 }

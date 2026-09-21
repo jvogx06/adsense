@@ -168,8 +168,17 @@ pnpm build
 pnpm test:e2e
 pnpm data:audit
 pnpm links:check
+pnpm seo:check
 pnpm prelaunch:check
 ```
+
+`seo:check` validates the content registry (duplicate slugs/titles/descriptions,
+missing cluster/canonical, future dates, Discover candidates missing alt text,
+noindex-in-sitemap) and flags **orphaned indexable pages** (any indexable page
+that no other page links to). Every page also gets a generated 1200×630
+Open Graph / Discover image via `/api/og` (page-specific `heroImage` overrides
+it). Content indexability is driven by `status`
+(`draft` / `published-noindex` / `published-index`) in the registry.
 
 CI (`.github/workflows/ci.yml`) runs lint, typecheck, unit tests, build and the
 data/links checks on every push/PR; e2e runs in a separate job.

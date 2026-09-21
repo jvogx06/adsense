@@ -22,6 +22,7 @@
     "test:e2e": "playwright test",
     "data:audit": "tsx scripts/data-audit.ts",
     "links:check": "tsx scripts/links-check.ts",
+    "seo:check": "tsx scripts/seo-audit.ts",
     "prelaunch:check": "tsx scripts/prelaunch-check.ts"
   },
   "dependencies": {

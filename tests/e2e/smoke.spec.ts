@@ -105,6 +105,20 @@ test.describe("technical routes", () => {
     await expect(page.locator("ins.adsbygoogle")).toHaveCount(0);
   });
 
+  test("dynamic OG image renders a PNG", async ({ request }) => {
+    const res = await request.get("/api/og?title=Bathroom%20Renovation%20Cost&eyebrow=Renovations");
+    expect(res.status()).toBe(200);
+    expect(res.headers()["content-type"]).toContain("image/png");
+  });
+
+  test("a guide exposes an og:image and max-image-preview:large", async ({ page }) => {
+    await page.goto("/renovations/bathroom-renovation-cost");
+    const ogImage = await page.locator('meta[property="og:image"]').first().getAttribute("content");
+    expect(ogImage).toContain("/api/og");
+    const robots = await page.locator('meta[name="robots"]').getAttribute("content");
+    expect(robots).toContain("max-image-preview:large");
+  });
+
   test("404 page is useful and ad-free", async ({ page }) => {
     const res = await page.goto("/this-route-does-not-exist");
     expect(res?.status()).toBe(404);

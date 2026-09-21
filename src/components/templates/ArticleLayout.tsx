@@ -9,6 +9,7 @@ import { AdSlot } from "@/components/ads/AdSlot";
 import { articleLd, breadcrumbLd, type BreadcrumbItem } from "@/lib/seo/jsonld";
 import { formatDate } from "@/lib/format";
 import { getContent } from "@/lib/content/registry";
+import { ogImageForEntry } from "@/lib/seo/og";
 import { getAuthor, getReviewer } from "@/config/authors";
 
 /**
@@ -115,6 +116,7 @@ export function ArticleLayout({
             datePublished: entry.publishedAt,
             dateModified: entry.updatedAt,
             authorName: author.name,
+            image: ogImageForEntry(entry).url,
           }),
           breadcrumbLd([{ name: "Home", href: "/" }, ...breadcrumbs]),
         ]}

@@ -16,12 +16,21 @@ import {
  * used for pages that would be thin without verified, differentiated data
  * (e.g. state pages) per spec §33/§49.4, and for utility pages.
  */
+/** Publication status drives indexability (§16 / §2.2). */
+export const contentStatusEnum = z.enum([
+  "draft", // not public
+  "published-noindex", // public but excluded from Search
+  "published-index", // production-ready and indexable
+]);
+export type ContentStatus = z.infer<typeof contentStatusEnum>;
+
 export const contentEntrySchema = z.object({
   slug: z.string(),
   title: z.string().min(1),
   /** Meta title (may differ slightly from H1). */
   metaTitle: z.string().min(1),
   description: z.string().min(1),
+  /** Topic cluster (also the category). */
   category: contentCategoryEnum,
   intent: contentIntentEnum,
   primaryKeyword: z.string().min(1),
@@ -29,14 +38,44 @@ export const contentEntrySchema = z.object({
   updatedAt: isoDate,
   sourceIds: z.array(z.string()).default([]),
   calculatorId: z.string().nullable().default(null),
+  /** Effective indexability (derived from `status`). */
   index: z.boolean().default(true),
+  /** Publication status (source of truth for indexability). */
+  status: contentStatusEnum,
+  /** Why a page is noindex, for auditing/transparency. */
+  noindexReason: z.string().nullable().default(null),
+  /** Cluster hub slug this page belongs under (null for hubs/site pages). */
+  parentHub: z.string().nullable().default(null),
+  /** Curated related pages (internal-link model §11). */
+  relatedSlugs: z.array(z.string()).default([]),
   featured: z.boolean().default(false),
+  /** Marks a page as a candidate for Google Discover (needs a strong image). */
+  discoverCandidate: z.boolean().default(false),
+  /** Page-specific hero/social image path (overrides the generated OG image). */
+  heroImage: z.string().nullable().default(null),
+  /** Alt text describing the hero/social image. */
+  heroAlt: z.string().nullable().default(null),
   /** Search-only aliases; never generate duplicate URLs (spec §52). */
   aliases: z.array(z.string()).default([]),
   /** Headings for search index + TOC. */
   headings: z.array(z.string()).default([]),
 });
 export type ContentEntry = z.infer<typeof contentEntrySchema>;
+
+/** Map each cluster/category to its hub slug (for parentHub derivation). */
+const CATEGORY_HUB: Record<ContentEntry["category"], string | null> = {
+  "air-conditioning": "/air-conditioning",
+  "solar-batteries": "/solar-batteries",
+  renovations: "/renovations",
+  trades: "/trades",
+  states: "/states",
+  calculators: "/calculators",
+  energy: "/calculators",
+  data: "/",
+  trust: "/",
+  legal: "/",
+  site: null,
+};
 
 const D = "2026-09-20";
 
@@ -54,6 +93,13 @@ const entries: ContentEntry[] = [
     publishedAt: D,
     updatedAt: D,
     index: true,
+    status: "published-index",
+    noindexReason: null,
+    parentHub: null,
+    relatedSlugs: [],
+    discoverCandidate: true,
+    heroImage: null,
+    heroAlt: "Home Cost Australia — calculators and cost guides",
     featured: false,
     aliases: [],
     sourceIds: [],
@@ -71,9 +117,9 @@ const entries: ContentEntry[] = [
     "calculators",
     "tool",
     "air conditioner running cost calculator",
-    { calculatorId: "air-conditioner-running-cost", featured: true, aliases: ["air conditioning running cost calculator"] },
+    { calculatorId: "air-conditioner-running-cost", featured: true, discoverCandidate: true, heroAlt: "Air conditioner running cost calculator showing daily, monthly and yearly electricity cost", aliases: ["air conditioning running cost calculator"] },
   ),
-  entry("/calculators/solar-battery-payback", "Solar Battery Payback Calculator", "Solar Battery Payback Calculator Australia", "Estimate simple battery payback using installed cost, usable capacity, solar surplus, electricity tariffs and efficiency assumptions.", "calculators", "tool", "solar battery payback calculator Australia", { calculatorId: "solar-battery-payback", featured: true }),
+  entry("/calculators/solar-battery-payback", "Solar Battery Payback Calculator", "Solar Battery Payback Calculator Australia", "Estimate simple battery payback using installed cost, usable capacity, solar surplus, electricity tariffs and efficiency assumptions.", "calculators", "tool", "solar battery payback calculator Australia", { calculatorId: "solar-battery-payback", featured: true, discoverCandidate: true, heroAlt: "Solar battery payback calculator showing simple payback years and 10-year savings" }),
   entry("/calculators/solar-system-size", "Solar System Size Calculator", "Solar System Size Calculator Australia", "Size a solar system from your daily use, target offset and your own peak-sun-hours. No invented irradiance defaults.", "calculators", "tool", "solar system size calculator Australia", { calculatorId: "solar-system-size", featured: true }),
   entry("/calculators/electricity-usage", "Electricity Usage Calculator", "Electricity Usage Calculator Australia", "Add appliances and see daily, monthly and annual electricity costs from power, hours and your tariff.", "calculators", "tool", "electricity usage calculator", { calculatorId: "electricity-usage", featured: true }),
   entry("/calculators/ev-charging-cost", "EV Charging Cost Calculator", "EV Charging Cost Calculator Australia", "Compare home, mixed and public EV charging costs from your consumption, distance and tariffs.", "calculators", "tool", "EV charging cost calculator Australia", { calculatorId: "ev-charging-cost", featured: true }),
@@ -82,21 +128,21 @@ const entries: ContentEntry[] = [
   entry("/calculators/battery-discount-estimator", "Federal Battery Discount Estimator", "Federal Battery Discount Estimator (Unofficial)", "A rough, dated indicative estimate of the federal battery discount. Not an official government calculator.", "calculators", "tool", "battery rebate calculator Australia", { calculatorId: "battery-discount-estimator", sourceIds: ["dcceew-battery-program", "cer-q2-2026"] }),
 
   // -- Air conditioning --
-  entry("/air-conditioning", "Air Conditioning Costs in Australia", "Air Conditioning Costs & Guides Australia", "Upfront, running and repair costs for ducted, split and multi-split air conditioning in Australia — with a running-cost calculator.", "air-conditioning", "informational", "air conditioning Australia costs"),
+  entry("/air-conditioning", "Air Conditioning Costs in Australia", "Air Conditioning Costs & Guides Australia", "Upfront, running and repair costs for ducted, split and multi-split air conditioning in Australia — with a running-cost calculator.", "air-conditioning", "informational", "air conditioning Australia costs", { discoverCandidate: true, heroAlt: "Air conditioning cost hub: ducted, split and multi-split systems in Australia" }),
   entry("/air-conditioning/ducted-air-conditioning-cost", "Ducted Air Conditioning Cost in Australia", "Ducted Air Conditioning Cost in Australia", "Sourced 2026 ducted air conditioning cost ranges, what drives them, how running costs work, and how to compare installer quotes fairly.", "air-conditioning", "commercial-research", "ducted air conditioning cost", { sourceIds: ["ducted-total"] }),
   entry("/air-conditioning/split-system-installation-cost", "Split System Installation Cost", "Split System Air Conditioning Installation Cost", "Sourced 2026 split system cost ranges by system type, the separate installation-only labour range, and how to compare quotes.", "air-conditioning", "commercial-research", "split system installation cost", { sourceIds: ["split-total-small", "split-total-two-unit", "split-total-multi", "split-install-only"] }),
   entry("/air-conditioning/air-conditioning-repair-cost", "Air Conditioning Repair Cost", "Air Conditioning Repair & Service Cost in Australia", "Sourced 2026 air conditioning service ranges, and how service, diagnosis, repair and component replacement differ in cost.", "air-conditioning", "commercial-research", "air conditioning repair cost", { sourceIds: ["ac-service-basic", "ac-service-average", "ac-service-higher", "electrician-hourly"] }),
   entry("/air-conditioning/ducted-vs-split-system", "Ducted vs Split System: Cost Comparison", "Ducted vs Split System: Cost Comparison", "A decision guide and 10-year ownership worksheet to compare ducted and split system air conditioning by total cost.", "air-conditioning", "comparison", "ducted vs split system"),
 
   // -- Solar & batteries --
-  entry("/solar-batteries", "Solar & Battery Costs in Australia", "Solar & Battery Costs in Australia", "Battery prices, payback, the federal program, sizing and installation — with calculators and dated sources.", "solar-batteries", "informational", "solar battery Australia cost", { sourceIds: ["dcceew-battery-program", "solarquotes-battery-cost-2026"] }),
+  entry("/solar-batteries", "Solar & Battery Costs in Australia", "Solar & Battery Costs in Australia", "Battery prices, payback, the federal program, sizing and installation — with calculators and dated sources.", "solar-batteries", "informational", "solar battery Australia cost", { sourceIds: ["dcceew-battery-program", "solarquotes-battery-cost-2026"], discoverCandidate: true, heroAlt: "Solar and battery cost hub: prices, payback and the federal program" }),
   entry("/solar-batteries/solar-battery-cost", "Solar Battery Cost in Australia", "Solar Battery Cost in Australia", "Understand current battery price ranges, installation components, rebate context and the inputs that determine your real system cost.", "solar-batteries", "commercial-research", "solar battery cost Australia", { sourceIds: ["solar-battery-hardware", "dcceew-battery-program"] }),
-  entry("/solar-batteries/solar-panel-installation-cost", "Solar Panel Installation Cost", "Solar Panel Installation Cost in Australia", "A framework for solar panel installation cost by system size, pointing to the SolarQuotes Price Explorer for observed Australian pricing.", "solar-batteries", "commercial-research", "solar panel installation cost Australia", { sourceIds: ["solarquotes-price-explorer"], index: false }),
+  entry("/solar-batteries/solar-panel-installation-cost", "Solar Panel Installation Cost", "Solar Panel Installation Cost in Australia", "A framework for solar panel installation cost by system size, pointing to the SolarQuotes Price Explorer for observed Australian pricing.", "solar-batteries", "commercial-research", "solar panel installation cost Australia", { sourceIds: ["solarquotes-price-explorer"], status: "published-noindex", noindexReason: "Framework only; awaiting attributed observed $/kW figures before indexing (§19)." }),
   entry("/solar-batteries/federal-battery-program", "Cheaper Home Batteries Program Explained", "Cheaper Home Batteries Program Explained", "A plain-language summary of the federal Cheaper Home Batteries Program: eligibility, the indicative discount, changes and official sources.", "solar-batteries", "informational", "Cheaper Home Batteries Program", { sourceIds: ["dcceew-battery-program", "cer-q2-2026", "cer-record-growth-2026"] }),
 
   // -- Renovations --
-  entry("/renovations", "Renovation Costs in Australia", "Renovation Costs in Australia", "Source-based cost ranges for bathroom, kitchen, roof and whole-home renovations, plus a budget calculator.", "renovations", "informational", "renovation costs Australia", { sourceIds: ["bathroom-reno-overall", "kitchen-reno-ballpark"] }),
-  entry("/renovations/bathroom-renovation-cost", "Bathroom Renovation Cost", "Bathroom Renovation Cost in Australia", "See sourced Australian bathroom renovation cost ranges, what changes the quote and how to build a realistic low, base and high budget.", "renovations", "commercial-research", "bathroom renovation cost Australia", { sourceIds: ["bathroom-reno-overall", "bathroom-reno-budget", "bathroom-reno-standard", "bathroom-reno-premium"], aliases: ["bathroom renovation price"] }),
+  entry("/renovations", "Renovation Costs in Australia", "Renovation Costs in Australia", "Source-based cost ranges for bathroom, kitchen, roof and whole-home renovations, plus a budget calculator.", "renovations", "informational", "renovation costs Australia", { sourceIds: ["bathroom-reno-overall", "kitchen-reno-ballpark"], discoverCandidate: true, heroAlt: "Australian renovation cost hub: bathroom, kitchen, roof and whole-home" }),
+  entry("/renovations/bathroom-renovation-cost", "Bathroom Renovation Cost", "Bathroom Renovation Cost in Australia", "See sourced Australian bathroom renovation cost ranges, what changes the quote and how to build a realistic low, base and high budget.", "renovations", "commercial-research", "bathroom renovation cost Australia", { sourceIds: ["bathroom-reno-overall", "bathroom-reno-budget", "bathroom-reno-standard", "bathroom-reno-premium"], aliases: ["bathroom renovation price"], discoverCandidate: true, heroAlt: "Bathroom renovation cost tiers and budget worksheet for Australia" }),
   entry("/renovations/kitchen-renovation-cost", "Kitchen Renovation Cost", "Kitchen Renovation Cost in Australia", "A sourced ballpark for kitchen renovation cost in Australia, what changes it, and how to plan a realistic budget.", "renovations", "commercial-research", "kitchen renovation cost Australia", { sourceIds: ["kitchen-reno-ballpark"] }),
   entry("/renovations/roof-restoration-cost", "Roof Restoration Cost", "Roof Restoration Cost in Australia", "Source-dated per-square-metre roof restoration ranges with an area worksheet and the factors that change the price.", "renovations", "commercial-research", "roof restoration cost Australia", { sourceIds: ["roof-restoration-small", "roof-restoration-medium", "roof-restoration-large"] }),
   entry("/renovations/roof-replacement-cost", "Roof Replacement Cost", "Roof Replacement Cost in Australia", "A material table and area estimator using source-dated $/m² ranges — replacement only, never mixed with restoration or repair.", "renovations", "commercial-research", "roof replacement cost Australia", { sourceIds: ["roof-replace-colorbond", "roof-replace-concrete-asphalt", "roof-replace-terracotta", "roof-replace-slate"] }),
@@ -145,6 +191,19 @@ function entry(
   primaryKeyword: string,
   extra: Partial<ContentEntry> = {},
 ): ContentEntry {
+  // Status is the source of truth for indexability; `index` is derived.
+  const index = extra.status
+    ? extra.status === "published-index"
+    : (extra.index ?? true);
+  const status: ContentStatus =
+    extra.status ?? (index ? "published-index" : "published-noindex");
+  const hub = CATEGORY_HUB[category];
+  const parentHub =
+    extra.parentHub !== undefined
+      ? extra.parentHub
+      : hub && hub !== slug
+        ? hub
+        : null;
   return {
     slug,
     title,
@@ -157,8 +216,15 @@ function entry(
     updatedAt: D,
     sourceIds: extra.sourceIds ?? [],
     calculatorId: extra.calculatorId ?? null,
-    index: extra.index ?? true,
+    index,
+    status,
+    noindexReason: extra.noindexReason ?? (index ? null : "Not yet index-ready"),
+    parentHub,
+    relatedSlugs: extra.relatedSlugs ?? [],
     featured: extra.featured ?? false,
+    discoverCandidate: extra.discoverCandidate ?? false,
+    heroImage: extra.heroImage ?? null,
+    heroAlt: extra.heroAlt ?? null,
     aliases: extra.aliases ?? [],
     headings: extra.headings ?? [],
   };
@@ -174,7 +240,11 @@ function stateEntry(slug: string, name: string, keyword: string): ContentEntry {
     "states",
     "informational",
     keyword,
-    { index: false },
+    {
+      status: "published-noindex",
+      noindexReason:
+        "Awaiting verified, differentiated state-specific data (§33); currently links to national tools.",
+    },
   );
 }
 

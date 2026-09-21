@@ -55,9 +55,11 @@ export default function Page() {
       </div>
 
       <div className="mt-10">
-        <SectionHeading title="Running cost tools" />
-        <div className="grid gap-4 sm:grid-cols-2">
+        <SectionHeading title="Running cost & energy" />
+        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
           <LinkCard href="/calculators/air-conditioner-running-cost" title="Running cost calculator" description="Daily, monthly and annual cost from your inputs." />
+          <LinkCard href="/air-conditioning/reverse-cycle-running-cost" title="Reverse-cycle running cost" description="Heating and cooling running cost, with worked examples." />
+          <LinkCard href="/air-conditioning/electricity-usage" title="How much electricity does it use?" description="Understand kWh for split and ducted systems." />
           <LinkCard href="/air-conditioning/ducted-vs-split-system" title="Ducted vs split comparison" description="A decision guide and 10-year ownership worksheet." />
         </div>
       </div>

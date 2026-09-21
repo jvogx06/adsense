@@ -39,3 +39,30 @@ export const acWorkedExamples: AcWorkedExample[] = [
 export function computeAcExample(example: AcWorkedExample) {
   return airConditionerRunningCost(example.input);
 }
+
+/**
+ * Reverse-cycle examples (heating + cooling) — same tested formula. Weeks/year
+ * are labelled seasonal assumptions, not market claims.
+ */
+export const reverseCycleExamples: AcWorkedExample[] = [
+  {
+    label: "Reverse-cycle heating, medium room",
+    input: {
+      ratedInputKW: 1.5,
+      hoursPerDay: 6,
+      daysPerWeek: 7,
+      weeksPerYear: 13,
+      tariffCents: 30,
+    },
+  },
+  {
+    label: "Reverse-cycle cooling, medium room",
+    input: {
+      ratedInputKW: 1.2,
+      hoursPerDay: 6,
+      daysPerWeek: 7,
+      weeksPerYear: 13,
+      tariffCents: 30,
+    },
+  },
+];

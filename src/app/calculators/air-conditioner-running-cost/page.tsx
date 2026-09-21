@@ -21,7 +21,8 @@ export default function Page() {
       related={[
         { label: "Ducted air conditioning cost", href: "/air-conditioning/ducted-air-conditioning-cost", description: "Upfront and running costs for ducted systems." },
         { label: "Split system installation cost", href: "/air-conditioning/split-system-installation-cost" },
-        { label: "Ducted vs split comparison", href: "/air-conditioning/ducted-vs-split-system" },
+        { label: "Reverse-cycle running cost", href: "/air-conditioning/reverse-cycle-running-cost" },
+        { label: "How much electricity does air conditioning use?", href: "/air-conditioning/electricity-usage" },
         { label: "Electricity usage calculator", href: "/calculators/electricity-usage" },
       ]}
     >

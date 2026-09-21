@@ -19,7 +19,8 @@ export default function Page() {
       related={[
         { label: "Solar battery cost in Australia", href: "/solar-batteries/solar-battery-cost" },
         { label: "Cheaper Home Batteries Program", href: "/solar-batteries/federal-battery-program" },
-        { label: "Federal battery discount estimator", href: "/calculators/battery-discount-estimator" },
+        { label: "Usable capacity explained", href: "/solar-batteries/usable-capacity-explained" },
+        { label: "How tariffs affect battery payback", href: "/solar-batteries/tariffs-and-battery-payback" },
         { label: "Solar system size calculator", href: "/calculators/solar-system-size" },
       ]}
     >

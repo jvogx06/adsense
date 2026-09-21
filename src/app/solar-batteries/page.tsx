@@ -58,6 +58,15 @@ export default function Page() {
       </div>
 
       <div className="mt-10">
+        <SectionHeading title="Understand the fundamentals" intro="Plain-language explainers behind the numbers." />
+        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          <LinkCard href="/solar-batteries/solar-battery-stcs-explained" title="Solar battery STCs explained" description="How the STC factor and capacity taper cut battery cost." />
+          <LinkCard href="/solar-batteries/usable-capacity-explained" title="Usable capacity explained" description="Nominal vs usable, efficiency and why it matters." />
+          <LinkCard href="/solar-batteries/tariffs-and-battery-payback" title="Tariffs & battery payback" description="Why the import–feed-in gap decides the value." />
+        </div>
+      </div>
+
+      <div className="mt-10">
         <SectionHeading title="Three numbers you need before deciding" />
         <Definition term="Installed net cost">
           What you actually pay after any rebate — not the sticker price of the hardware.

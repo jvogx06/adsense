@@ -10,7 +10,11 @@ import { renovationBudget } from "@/lib/calculators/renovation-budget";
 import { roofReplacementRange } from "@/lib/calculators/roof-replacement";
 import { compareQuotes } from "@/lib/calculators/quote-comparison";
 import { CalculatorError, parseLooseNumber } from "@/lib/calculators/shared";
-import { acWorkedExamples, computeAcExample } from "@/lib/calculators/examples";
+import {
+  acWorkedExamples,
+  computeAcExample,
+  reverseCycleExamples,
+} from "@/lib/calculators/examples";
 import { batteryProgram } from "@/data/programs/battery-program";
 
 describe("air conditioner running cost", () => {
@@ -99,6 +103,20 @@ describe("AC worked examples (bound to the formula so the page can't diverge)", 
     const r = computeAcExample(large);
     expect(r.kWhPerDay).toBeCloseTo(28, 6);
     expect(r.costPerDay).toBeCloseTo(8.4, 6);
+  });
+
+  it("reverse-cycle heating: 1.5 kW × 6 h at 30 c/kWh → 9 kWh/day, A$2.70/day", () => {
+    const heat = reverseCycleExamples.find((e) => e.label.includes("heating"))!;
+    const r = computeAcExample(heat);
+    expect(r.kWhPerDay).toBeCloseTo(9, 6);
+    expect(r.costPerDay).toBeCloseTo(2.7, 6);
+  });
+
+  it("reverse-cycle cooling: 1.2 kW × 6 h at 30 c/kWh → 7.2 kWh/day, A$2.16/day", () => {
+    const cool = reverseCycleExamples.find((e) => e.label.includes("cooling"))!;
+    const r = computeAcExample(cool);
+    expect(r.kWhPerDay).toBeCloseTo(7.2, 6);
+    expect(r.costPerDay).toBeCloseTo(2.16, 6);
   });
 });
 

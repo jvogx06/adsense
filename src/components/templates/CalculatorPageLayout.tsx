@@ -6,6 +6,7 @@ import { SourceList } from "@/components/content/sources";
 import { RelatedLinks, type RelatedLink } from "@/components/content/RelatedLinks";
 import { MethodologyCallout } from "@/components/content/callouts";
 import { AdSlot } from "@/components/ads/AdSlot";
+import { AdReadySpace } from "@/components/ads/AdReadySpace";
 import { webApplicationLd, breadcrumbLd, type BreadcrumbItem } from "@/lib/seo/jsonld";
 import { getContent } from "@/lib/content/registry";
 
@@ -44,7 +45,13 @@ export function CalculatorPageLayout({
           <p className="mt-3 text-lg text-muted">{intro}</p>
         </header>
 
+        {/* Clean space before the tool — never inside it. */}
+        <AdReadySpace />
+
         <div className="mt-6">{tool}</div>
+
+        {/* Space after the full tool + result/explanation block, before editorial. */}
+        <AdReadySpace />
 
         <div className="mt-10 content-prose">{children}</div>
 

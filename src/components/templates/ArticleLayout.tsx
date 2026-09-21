@@ -6,6 +6,7 @@ import { SourceList, LastChecked } from "@/components/content/sources";
 import { RelatedLinks, type RelatedLink } from "@/components/content/RelatedLinks";
 import { TableOfContents, type TocItem } from "@/components/content/TableOfContents";
 import { AdSlot } from "@/components/ads/AdSlot";
+import { AdReadySpace } from "@/components/ads/AdReadySpace";
 import { articleLd, breadcrumbLd, type BreadcrumbItem } from "@/lib/seo/jsonld";
 import { formatDate } from "@/lib/format";
 import { getContent } from "@/lib/content/registry";
@@ -69,6 +70,7 @@ export function ArticleLayout({
         </div>
       </header>
 
+      <AdReadySpace />
       <AdSlot placement="article-after-intro" />
 
       <div className="content-prose">{children}</div>
@@ -84,6 +86,7 @@ export function ArticleLayout({
 
       <AdSlot placement="article-end" />
 
+      <AdReadySpace />
       <RelatedLinks links={related} />
     </>
   );

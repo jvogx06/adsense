@@ -5,6 +5,7 @@ import { JsonLd } from "@/components/seo/JsonLd";
 import { SourceList } from "@/components/content/sources";
 import { webPageLd, breadcrumbLd, type BreadcrumbItem } from "@/lib/seo/jsonld";
 import { getContent } from "@/lib/content/registry";
+import { AdReadySpace } from "@/components/ads/AdReadySpace";
 
 /**
  * Hub template (spec §48/§49.3). Uses semantic WebPage schema (not Article),
@@ -36,6 +37,8 @@ export function HubLayout({
         </header>
 
         <div className="mt-8">{children}</div>
+
+        <AdReadySpace />
 
         {sources.length > 0 && (
           <section aria-labelledby="hub-sources" className="mt-12 border-t border-border pt-6">

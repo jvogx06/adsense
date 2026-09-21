@@ -9,6 +9,7 @@ import { batteryProgram } from "@/data/programs/battery-program";
 import { pageMetadata } from "@/lib/seo/metadata";
 import { organisationLd, webSiteLd } from "@/lib/seo/jsonld";
 import { formatDate } from "@/lib/format";
+import { AdReadySpace } from "@/components/ads/AdReadySpace";
 
 export const metadata: Metadata = pageMetadata("/");
 
@@ -91,6 +92,9 @@ export default function HomePage() {
         </Container>
       </section>
 
+      {/* Natural space between hero and main content for Auto Ads. */}
+      <AdReadySpace />
+
       {/* Popular calculators */}
       <Container className="py-12">
         <SectionHeading title="Popular calculators" intro="Real formula calculators that run in your browser — no login, no email." />
@@ -161,6 +165,9 @@ export default function HomePage() {
           ))}
         </div>
       </Container>
+
+      {/* Second natural space lower down, between large content blocks. */}
+      <AdReadySpace />
 
       {/* How our numbers work */}
       <section className="bg-surface py-12">

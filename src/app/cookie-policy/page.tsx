@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { TrustLayout } from "@/components/templates/TrustLayout";
+import { siteConfig } from "@/config/site";
 import { pageMetadata } from "@/lib/seo/metadata";
 
 export const metadata: Metadata = pageMetadata("/cookie-policy");
@@ -43,6 +44,12 @@ export default function Page() {
       <p>
         You can clear or block cookies in your browser settings. Doing so may reset your saved
         consent choice.
+      </p>
+
+      <h2 id="contact">Questions or privacy requests</h2>
+      <p>
+        For questions about cookies or a privacy request, email us at{" "}
+        <a href={`mailto:${siteConfig.contactEmail}`}>{siteConfig.contactEmail}</a>.
       </p>
     </TrustLayout>
   );

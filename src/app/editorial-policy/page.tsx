@@ -51,8 +51,9 @@ export default function Page() {
       <h2 id="corrections">Corrections & updates</h2>
       <p>
         We fix errors promptly and update figures on a review cadence (rebates and programs most
-        frequently). See our <a href="/corrections">corrections policy</a> and{" "}
-        <a href="/methodology">methodology</a>.
+        frequently). To report an error, request a correction or question a source, email us at{" "}
+        <a href={`mailto:${siteConfig.contactEmail}`}>{siteConfig.contactEmail}</a>. See also our{" "}
+        <a href="/corrections">corrections policy</a> and <a href="/methodology">methodology</a>.
       </p>
 
       <h2 id="affiliate">Affiliate policy (reserved for the future)</h2>

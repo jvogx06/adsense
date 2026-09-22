@@ -47,6 +47,12 @@ export default function Page() {
         Visitors in the EEA, UK and Switzerland are handled through a certified consent mechanism
         before any personalised ads are served.
       </p>
+
+      <h2 id="contact">Questions about advertising</h2>
+      <p>
+        For questions about advertising on this site, email us at{" "}
+        <a href={`mailto:${siteConfig.contactEmail}`}>{siteConfig.contactEmail}</a>.
+      </p>
     </TrustLayout>
   );
 }

@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { TrustLayout } from "@/components/templates/TrustLayout";
+import { siteConfig } from "@/config/site";
 import { pageMetadata } from "@/lib/seo/metadata";
 
 export const metadata: Metadata = pageMetadata("/disclaimer");
@@ -43,6 +44,13 @@ export default function Page() {
       <p>
         See also our <a href="/methodology">methodology</a>, <a href="/terms">terms of use</a> and{" "}
         <a href="/privacy-policy">privacy policy</a>.
+      </p>
+
+      <h2 id="contact">Corrections and questions</h2>
+      <p>
+        To report an error or ask a question about a figure, email us at{" "}
+        <a href={`mailto:${siteConfig.contactEmail}`}>{siteConfig.contactEmail}</a>, or see our{" "}
+        <a href="/corrections">corrections policy</a>.
       </p>
     </TrustLayout>
   );

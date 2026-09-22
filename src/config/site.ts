@@ -55,7 +55,11 @@ const siteName = env("NEXT_PUBLIC_SITE_NAME") ?? "Home Cost Australia";
 const legalNameConfigured = Boolean(env("PUBLISHER_LEGAL_NAME"));
 const publisherLegalName = env("PUBLISHER_LEGAL_NAME") ?? siteName;
 
-const contactEmail = env("NEXT_PUBLIC_CONTACT_EMAIL") ?? "";
+// Public contact email. Env-overridable, with a safe non-empty fallback to the
+// official public address so no "finalising our contact channel" placeholder is
+// ever shown to a visitor. Defined once here; components read siteConfig.contactEmail.
+const DEFAULT_CONTACT_EMAIL = "homecostaustralia@gmail.com";
+const contactEmail = env("NEXT_PUBLIC_CONTACT_EMAIL") ?? DEFAULT_CONTACT_EMAIL;
 const contactConfigured = contactEmail.length > 0;
 
 // The site's real AdSense publisher id (public, not a secret — it appears in

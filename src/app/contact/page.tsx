@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import { TrustLayout } from "@/components/templates/TrustLayout";
-import { Callout } from "@/components/content/callouts";
 import { siteConfig } from "@/config/site";
 import { pageMetadata } from "@/lib/seo/metadata";
 
@@ -13,24 +12,12 @@ export default function Page() {
       breadcrumbs={[{ name: "Contact", href: "/contact" }]}
       lead="Get in touch about a correction, a data source or a general question."
     >
-      {siteConfig.contactConfigured ? (
-        <>
-          <h2 id="email">Email us</h2>
-          <p>
-            The best way to reach us is by email at{" "}
-            <a href={`mailto:${siteConfig.contactEmail}`}>{siteConfig.contactEmail}</a>. For
-            corrections, please include the page URL and, if possible, a dated source.
-          </p>
-        </>
-      ) : (
-        <Callout tone="neutral" title="Get in touch">
-          <p>
-            We&apos;re finalising our public contact channel — please check back soon. In the
-            meantime, our <a href="/corrections">corrections policy</a> explains how error
-            reports are handled.
-          </p>
-        </Callout>
-      )}
+      <h2 id="email">Email us</h2>
+      <p>
+        The best way to reach us is by email at{" "}
+        <a href={`mailto:${siteConfig.contactEmail}`}>{siteConfig.contactEmail}</a>. For
+        corrections, please include the page URL and, if possible, a dated source.
+      </p>
 
       <h2 id="corrections">Corrections</h2>
       <p>

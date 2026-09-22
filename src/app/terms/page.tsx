@@ -49,6 +49,12 @@ export default function Page() {
 
       <h2 id="changes">Changes</h2>
       <p>We may update these terms; the &ldquo;updated&rdquo; date above reflects the latest revision.</p>
+
+      <h2 id="contact">Questions about these terms</h2>
+      <p>
+        For questions relating to these terms, email us at{" "}
+        <a href={`mailto:${siteConfig.contactEmail}`}>{siteConfig.contactEmail}</a>.
+      </p>
     </TrustLayout>
   );
 }

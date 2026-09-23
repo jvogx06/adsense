@@ -4,6 +4,7 @@ import { siteConfig, robotsFor } from "@/config/site";
 import { SiteHeader } from "@/components/layout/SiteHeader";
 import { SiteFooter } from "@/components/layout/SiteFooter";
 import { Analytics } from "@/components/analytics/Analytics";
+import { Analytics as VercelAnalytics } from "@vercel/analytics/next";
 import { AdSenseScript } from "@/components/ads/AdSenseScript";
 
 export const metadata: Metadata = {
@@ -55,6 +56,7 @@ export default function RootLayout({
         <main id="main">{children}</main>
         <SiteFooter />
         <Analytics />
+        <VercelAnalytics />
         <AdSenseScript />
       </body>
     </html>

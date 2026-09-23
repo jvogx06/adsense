@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { LinkCard, SectionHeading } from "@/components/ui/primitives";
 import { HubLayout } from "@/components/templates/HubLayout";
 import { CostRangeCard } from "@/components/content/CostRangeCard";
+import { CostRangeChart } from "@/components/content/charts/CostRangeChart";
 import { QuoteComparison } from "@/components/calculator/tools/QuoteComparison";
 import { Definition, Checklist } from "@/components/content/callouts";
 import { pageMetadata } from "@/lib/seo/metadata";
@@ -23,6 +24,21 @@ export default function Page() {
       <div className="mt-8 grid gap-4 sm:grid-cols-2">
         <CostRangeCard datumId="plumber-hourly" />
         <CostRangeCard datumId="electrician-hourly" />
+      </div>
+
+      <div className="mt-8 grid gap-4 lg:grid-cols-2">
+        <CostRangeChart
+          title="Hourly rate — electrician vs plumber"
+          datumIds={["electrician-hourly", "plumber-hourly"]}
+          labelFor={(d) => (d.id === "electrician-hourly" ? "Electrician" : "Plumber")}
+          intro="Typical hourly labour ranges from national cost guides (excludes parts and call-out)."
+        />
+        <CostRangeChart
+          title="Call-out / service fee — electrician vs plumber"
+          datumIds={["electrician-service-fee", "plumber-callout"]}
+          labelFor={(d) => (d.id === "electrician-service-fee" ? "Electrician" : "Plumber")}
+          intro="Typical attendance/first-visit fees, charged separately from hourly labour."
+        />
       </div>
 
       <div className="mt-10">

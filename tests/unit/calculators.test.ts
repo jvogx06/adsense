@@ -14,6 +14,7 @@ import {
   acWorkedExamples,
   computeAcExample,
   reverseCycleExamples,
+  acTariffCostSeries,
 } from "@/lib/calculators/examples";
 import { batteryProgram } from "@/data/programs/battery-program";
 
@@ -117,6 +118,15 @@ describe("AC worked examples (bound to the formula so the page can't diverge)", 
     const r = computeAcExample(cool);
     expect(r.kWhPerDay).toBeCloseTo(7.2, 6);
     expect(r.costPerDay).toBeCloseTo(2.16, 6);
+  });
+
+  it("tariff series (1.0 kW × 8 h = 8 kWh/day): 25/35/45 c/kWh → A$2.00/2.80/3.60 per day", () => {
+    const series = acTariffCostSeries();
+    expect(series.map((p) => p.tariffCents)).toEqual([25, 35, 45]);
+    expect(series.every((p) => p.kWhPerDay === 8)).toBe(true);
+    expect(series[0]!.costPerDay).toBeCloseTo(2.0, 6);
+    expect(series[1]!.costPerDay).toBeCloseTo(2.8, 6);
+    expect(series[2]!.costPerDay).toBeCloseTo(3.6, 6);
   });
 });
 

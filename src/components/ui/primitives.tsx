@@ -1,5 +1,26 @@
 import Link from "next/link";
 import type { ReactNode } from "react";
+import { CategoryIcon, iconForSlug, type CategoryIconName } from "@/components/ui/CategoryIcon";
+
+/** Soft rounded tile holding a decorative category icon (navy-green on tint). */
+export function IconTile({
+  name,
+  size = 24,
+  className = "",
+}: {
+  name: CategoryIconName;
+  size?: number;
+  className?: string;
+}) {
+  return (
+    <span
+      aria-hidden="true"
+      className={`inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-[10px] bg-primary/5 text-primary ${className}`}
+    >
+      <CategoryIcon name={name} size={size} />
+    </span>
+  );
+}
 
 export function Container({
   children,
@@ -43,19 +64,26 @@ export function LinkCard({
   title,
   description,
   eyebrow,
+  icon,
   className = "",
 }: {
   href: string;
   title: string;
   description?: string;
   eyebrow?: string;
+  icon?: CategoryIconName;
   className?: string;
 }) {
+  // Auto-resolve a category icon from the href when one isn't passed, so hub
+  // and homepage cards get consistent icons without per-card wiring. Unmapped
+  // links (e.g. state guides) resolve to undefined and render no icon.
+  const resolvedIcon = icon ?? iconForSlug(href);
   return (
     <Link
       href={href}
       className={`group block rounded-[var(--radius-card)] border border-border bg-surface p-5 no-underline shadow-card transition-colors hover:border-primary ${className}`}
     >
+      {resolvedIcon && <IconTile name={resolvedIcon} className="mb-3" />}
       {eyebrow && (
         <span className="text-xs font-semibold uppercase tracking-wide text-muted">
           {eyebrow}

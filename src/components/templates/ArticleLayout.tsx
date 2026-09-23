@@ -7,6 +7,7 @@ import { RelatedLinks, type RelatedLink } from "@/components/content/RelatedLink
 import { TableOfContents, type TocItem } from "@/components/content/TableOfContents";
 import { AdSlot } from "@/components/ads/AdSlot";
 import { AdReadySpace } from "@/components/ads/AdReadySpace";
+import { CategoryIcon, type CategoryIconName } from "@/components/ui/CategoryIcon";
 import { articleLd, breadcrumbLd, type BreadcrumbItem } from "@/lib/seo/jsonld";
 import { formatDate } from "@/lib/format";
 import { getContent } from "@/lib/content/registry";
@@ -27,6 +28,7 @@ export function ArticleLayout({
   related,
   toc,
   dataChecked = true,
+  heroIcon,
 }: {
   slug: string;
   breadcrumbs: BreadcrumbItem[];
@@ -36,6 +38,8 @@ export function ArticleLayout({
   related: RelatedLink[];
   toc?: TocItem[];
   dataChecked?: boolean;
+  /** Optional decorative category illustration beside the H1 (high-value pages). */
+  heroIcon?: CategoryIconName;
 }) {
   const entry = getContent(slug);
   const sources = sourceIds ?? entry.sourceIds;
@@ -45,7 +49,18 @@ export function ArticleLayout({
   const article = (
     <>
       <header className="mb-6">
-        <h1 className="text-3xl font-bold sm:text-4xl">{entry.title}</h1>
+        <div className="flex items-start gap-4">
+          {heroIcon && (
+            <span
+              aria-hidden="true"
+              className="hidden shrink-0 items-center justify-center rounded-[12px] bg-primary/5 text-primary sm:inline-flex"
+              style={{ width: 60, height: 60 }}
+            >
+              <CategoryIcon name={heroIcon} size={34} />
+            </span>
+          )}
+          <h1 className="text-3xl font-bold sm:text-4xl">{entry.title}</h1>
+        </div>
         <div className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-1 text-sm text-muted">
           <span>By {author.name}</span>
           <span aria-hidden="true">·</span>

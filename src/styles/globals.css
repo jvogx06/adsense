@@ -121,6 +121,12 @@
     text-underline-offset: 2px;
   }
 
+  /* Data-visual cards keep their own link styling inside prose columns
+   * (source badges and the methodology link are not body-copy links). */
+  .content-prose .chart-frame a {
+    text-decoration: none;
+  }
+
   /* Responsive table wrapper with a visible scroll hint (spec §10.4). */
   .table-scroll {
     overflow-x: auto;

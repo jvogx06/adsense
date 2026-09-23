@@ -10,6 +10,7 @@ export default function Page() {
   return (
     <ArticleLayout
       slug="/solar-batteries/solar-battery-cost"
+      heroIcon="battery"
       breadcrumbs={[
         { name: "Solar & Batteries", href: "/solar-batteries" },
         { name: "Solar Battery Cost", href: "/solar-batteries/solar-battery-cost" },

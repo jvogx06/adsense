@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { ArticleLayout } from "@/components/templates/ArticleLayout";
 import { CostRangeCard } from "@/components/content/CostRangeCard";
+import { CostRangeChart } from "@/components/content/charts/CostRangeChart";
 import { DataTable } from "@/components/content/DataTable";
 import { RenovationBudgetCalculator } from "@/components/calculator/tools/RenovationBudgetCalculator";
 import { Checklist, Callout } from "@/components/content/callouts";
@@ -16,6 +17,7 @@ export default function Page() {
   return (
     <ArticleLayout
       slug="/renovations/bathroom-renovation-cost"
+      heroIcon="bathroom"
       breadcrumbs={[
         { name: "Renovations", href: "/renovations" },
         { name: "Bathroom Renovation Cost", href: "/renovations/bathroom-renovation-cost" },
@@ -59,6 +61,19 @@ export default function Page() {
         ]}
         sourceId="hipages-bathroom-2026"
         footnote="Ranges are from a commercial marketplace guide; treat as one dated reference, not a quote."
+      />
+
+      <CostRangeChart
+        title="Bathroom renovation cost by tier"
+        datumIds={["bathroom-reno-budget", "bathroom-reno-standard", "bathroom-reno-premium"]}
+        labelFor={(d) =>
+          d.id === "bathroom-reno-budget"
+            ? "Budget"
+            : d.id === "bathroom-reno-standard"
+              ? "Standard"
+              : "Premium"
+        }
+        intro="The same national guide's tiers on one axis. Premium is open-ended in the source."
       />
 
       <h2 id="includes">What the number includes</h2>

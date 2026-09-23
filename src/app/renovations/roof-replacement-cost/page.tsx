@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { ArticleLayout } from "@/components/templates/ArticleLayout";
 import { RoofReplacementCalculator } from "@/components/calculator/tools/RoofReplacementCalculator";
 import { DataTable } from "@/components/content/DataTable";
+import { CostRangeChart } from "@/components/content/charts/CostRangeChart";
 import { Callout } from "@/components/content/callouts";
 import { pageMetadata } from "@/lib/seo/metadata";
 
@@ -11,6 +12,7 @@ export default function Page() {
   return (
     <ArticleLayout
       slug="/renovations/roof-replacement-cost"
+      heroIcon="roofing"
       breadcrumbs={[
         { name: "Renovations", href: "/renovations" },
         { name: "Roof Replacement Cost", href: "/renovations/roof-replacement-cost" },
@@ -44,6 +46,25 @@ export default function Page() {
         ]}
         sourceId="hipages-roof-replacement-2026"
         footnote="Per the source, these figures reflect replacement roofing materials and labour, and may exclude structural work and removal/disposal of the existing roof. Do not mix with restoration or repair figures."
+      />
+
+      <CostRangeChart
+        title="Roof replacement cost by material (per m²)"
+        datumIds={[
+          "roof-replace-colorbond",
+          "roof-replace-concrete-asphalt",
+          "roof-replace-terracotta",
+          "roof-replace-slate",
+        ]}
+        labelFor={(d) =>
+          ({
+            "roof-replace-colorbond": "Colorbond / metal",
+            "roof-replace-concrete-asphalt": "Concrete / asphalt",
+            "roof-replace-terracotta": "Terracotta tile",
+            "roof-replace-slate": "Slate",
+          })[d.id] ?? d.metric
+        }
+        intro="Per-m² ranges on one axis — slate sits far above the others, so lower-cost bars look short by design."
       />
 
       <h2 id="estimator">Area estimator</h2>

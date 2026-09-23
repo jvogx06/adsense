@@ -10,6 +10,7 @@ import { pageMetadata } from "@/lib/seo/metadata";
 import { organisationLd, webSiteLd } from "@/lib/seo/jsonld";
 import { formatDate } from "@/lib/format";
 import { AdReadySpace } from "@/components/ads/AdReadySpace";
+import { iconForSlug } from "@/components/ui/CategoryIcon";
 
 export const metadata: Metadata = pageMetadata("/");
 
@@ -100,7 +101,7 @@ export default function HomePage() {
         <SectionHeading title="Popular calculators" intro="Real formula calculators that run in your browser — no login, no email." />
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {popularCalculators.map((c) => (
-            <LinkCard key={c.id} href={c.route} title={c.name} description={c.shortDescription} eyebrow={c.group} />
+            <LinkCard key={c.id} href={c.route} title={c.name} description={c.shortDescription} eyebrow={c.group} icon={iconForSlug(c.route)} />
           ))}
         </div>
       </Container>
@@ -111,7 +112,7 @@ export default function HomePage() {
           <SectionHeading title="What are you planning?" />
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
             {categories.map((cat) => (
-              <LinkCard key={cat.href} href={cat.href} title={cat.title} description={cat.description} />
+              <LinkCard key={cat.href} href={cat.href} title={cat.title} description={cat.description} icon={iconForSlug(cat.href)} />
             ))}
           </div>
         </Container>
@@ -144,7 +145,7 @@ export default function HomePage() {
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
             {popularGuides.map((slug) => {
               const e = getContent(slug);
-              return <LinkCard key={slug} href={slug} title={e.title} description={e.description} />;
+              return <LinkCard key={slug} href={slug} title={e.title} description={e.description} icon={iconForSlug(slug)} />;
             })}
           </div>
         </Container>

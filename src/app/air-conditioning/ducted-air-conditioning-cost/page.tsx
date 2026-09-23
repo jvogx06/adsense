@@ -11,6 +11,7 @@ export default function Page() {
   return (
     <ArticleLayout
       slug="/air-conditioning/ducted-air-conditioning-cost"
+      heroIcon="air-conditioning"
       breadcrumbs={[
         { name: "Air Conditioning", href: "/air-conditioning" },
         { name: "Ducted Air Conditioning Cost", href: "/air-conditioning/ducted-air-conditioning-cost" },

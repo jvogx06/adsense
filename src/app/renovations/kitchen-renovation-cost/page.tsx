@@ -10,6 +10,7 @@ export default function Page() {
   return (
     <ArticleLayout
       slug="/renovations/kitchen-renovation-cost"
+      heroIcon="kitchen"
       breadcrumbs={[
         { name: "Renovations", href: "/renovations" },
         { name: "Kitchen Renovation Cost", href: "/renovations/kitchen-renovation-cost" },

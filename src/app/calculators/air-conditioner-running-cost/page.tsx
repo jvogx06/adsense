@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { CalculatorPageLayout } from "@/components/templates/CalculatorPageLayout";
 import { AirConditionerCalculator } from "@/components/calculator/tools/AirConditionerCalculator";
+import { RunningCostChart } from "@/components/content/charts/RunningCostChart";
 import { Callout, Definition } from "@/components/content/callouts";
 import { acWorkedExamples, computeAcExample } from "@/lib/calculators/examples";
 import { formatAUD, formatKWh } from "@/lib/format";
@@ -42,6 +43,8 @@ export default function Page() {
         Tariffs are entered in cents per kWh and converted internally by dividing
         by 100.
       </p>
+
+      <RunningCostChart />
 
       <Definition term="Input power vs cooling capacity">
         Input power is the electricity the unit draws. Cooling capacity is how much
